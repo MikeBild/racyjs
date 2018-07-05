@@ -1,0 +1,213 @@
+{
+  "__schema": {
+    "types": [
+      { "kind": "OBJECT", "name": "GraphQLHubAPI", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "String", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "HackerNewsAPI", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "Int", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "HackerNewsItem", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "Boolean", "possibleTypes": null },
+      { "kind": "ENUM", "name": "ItemType", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "HackerNewsUser", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "HackerNewsAPIV2", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "ID", "possibleTypes": null },
+      {
+        "kind": "INTERFACE",
+        "name": "Node",
+        "possibleTypes": [
+          { "name": "HackerNewsV2Story" },
+          { "name": "HackerNewsV2Job" },
+          { "name": "HackerNewsV2Poll" },
+          { "name": "HackerNewsV2Comment" },
+          { "name": "HackerNewsV2PollPart" },
+          { "name": "HackerNewsV2User" }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "HackerNewsV2Story",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "HackerNewsV2User", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "NodeConnection", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "PageInfo", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "NodeEdge", "possibleTypes": null },
+      {
+        "kind": "OBJECT",
+        "name": "HackerNewsV2CommentConnection",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "HackerNewsV2CommentEdge",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "HackerNewsV2Comment",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "HackerNewsV2Job", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "HackerNewsV2Poll", "possibleTypes": null },
+      {
+        "kind": "OBJECT",
+        "name": "HackerNewsV2PollPart",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "RedditAPI", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "RedditSubreddit", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "Float", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "RedditLink", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "RedditUser", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "RedditComment", "possibleTypes": null },
+      { "kind": "ENUM", "name": "TimeInterval", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "KeyValueAPI", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "KeyValueItem", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubAPI", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubUser", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubRepo", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubCommit", "possibleTypes": null },
+      {
+        "kind": "UNION",
+        "name": "UserOrCommitAuthor",
+        "possibleTypes": [
+          { "name": "GithubCommitAuthor" },
+          { "name": "GithubUser" }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GithubCommitAuthor",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "GithubStatus", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubTree", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubTreeEntry", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GithubIssue", "possibleTypes": null },
+      {
+        "kind": "OBJECT",
+        "name": "GithubIssueLabelType",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GithubIssueCommentType",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "GithubBranch", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "TwitterAPI", "possibleTypes": null },
+      { "kind": "ENUM", "name": "UserIdentifier", "possibleTypes": null },
+      { "kind": "SCALAR", "name": "UserIdentity", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "TwitterUser", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "Tweet", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "Retweet", "possibleTypes": null },
+      { "kind": "ENUM", "name": "SearchReponse", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GiphyAPI", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GiphyGIFData", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "GiphyGIFImages", "possibleTypes": null },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedHeight",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedHeightStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedHeightDownsample",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedWidth",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedWidthStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedWidthDownsample",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedHeightSmall",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedHeightSmallStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedWidthSmall",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataFixedWidthSmallStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataDownsized",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataDownsizedStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataDownsizedLarge",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataOriginal",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataOriginalStill",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "GiphyGIFImageDataLooping",
+        "possibleTypes": null
+      },
+      { "kind": "ENUM", "name": "GiphyRatingType", "possibleTypes": null },
+      {
+        "kind": "OBJECT",
+        "name": "GraphQLHubMutationAPI",
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "SetValueForKeyInput",
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SetValueForKeyPayload",
+        "possibleTypes": null
+      },
+      { "kind": "OBJECT", "name": "__Schema", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "__Type", "possibleTypes": null },
+      { "kind": "ENUM", "name": "__TypeKind", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "__Field", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "__InputValue", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "__EnumValue", "possibleTypes": null },
+      { "kind": "OBJECT", "name": "__Directive", "possibleTypes": null }
+    ]
+  }
+}

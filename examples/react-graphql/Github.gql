@@ -1,0 +1,29 @@
+#import "./GithubCommitFragment.gql"
+
+query GitHub {
+  github {
+    user(username: "mikebild") {
+      login
+      id
+      avatar_url
+    }
+    repo(ownerUsername: "mikebild", name: "racyjs") {
+      id
+      name
+      issues(limit: 1) {
+        id
+        state
+        title
+      }
+      branches(limit: 1) {
+        name
+        lastCommit {
+          ...GithubCommit
+        }
+      }
+      commits(limit: 1) {
+        ...GithubCommit
+      }
+    }
+  }
+}

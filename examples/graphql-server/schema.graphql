@@ -1,0 +1,47 @@
+type Todo {
+  id: ID!
+  description: String!
+  done: Boolean
+}
+
+type Query {
+  todos: [Todo]
+  todo(id: ID!): Todo
+}
+
+type TodoAddResult {
+  result: Todo
+  failure: AddTodoFailure
+}
+
+type TodoToggleDoneResult {
+  result: Todo
+  failure: ToggleDoneFailure
+}
+
+type TodoRemoveResult {
+  result: Todo
+  failure: RemoveTodoFailure
+}
+
+type ToggleDoneFailure {
+  message: String!
+}
+
+type RemoveTodoFailure {
+  message: String!
+}
+
+type AddTodoFailure {
+  message: String!
+}
+
+input AddTodoInput {
+  description: String!
+}
+
+type Mutation {
+  todoAdd(input: AddTodoInput!): TodoAddResult
+  todoRemove(id: ID!): TodoRemoveResult
+  todoToogleDone(id: ID!): TodoToggleDoneResult
+}

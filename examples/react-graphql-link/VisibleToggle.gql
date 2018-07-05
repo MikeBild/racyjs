@@ -1,0 +1,5 @@
+mutation ToogleVisibility($visible: Boolean!) {
+  toggleVisibility(visible: $visible) @client {
+    visible
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "racy dev",
+    "build": "racy build",
+    "serve": "racy serve",
+    "start": "NODE_ENV=production npm run build && npm run serve"
+  },
+  "dependencies": {
+    "racy": "file:../.."
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}
