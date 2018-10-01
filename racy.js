@@ -137,9 +137,8 @@ async function main() {
 
       const allRoutes = Array.isArray(components)
         ? components.reduce((s, e) => {
-            if (e.routes) s = s.concat(e.routes);
-
-            return s;
+            if (e.routes) return s.concat(e.routes);
+            return s.concat([e]);
           }, [])
         : [{ component: components, path: '/' }];
 

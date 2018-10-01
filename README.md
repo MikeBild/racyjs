@@ -9,7 +9,7 @@
 - [React](https://github.com/facebook/react/blob/master/README.md)
 - [Styled-Components](https://github.com/styled-components/styled-components/blob/master/README.md)
 - [Helmet-Async](https://github.com/staylor/react-helmet-async/blob/master/README.md)
-- [React-Router](https://github.com/ReactTraining/react-router/blob/master/packages/react-router/README.md) + [React-Router-DOM](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/README.md) + [React-Router-Config](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-config/README.md)(https://github.com/ReactTraining/react-router/blob/master/packages/react-router-config/README.md)
+- [React-Router](https://github.com/ReactTraining/react-router/blob/master/packages/react-router/README.md) + [React-Router-DOM](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/README.md) + [React-Router-Config](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-config/README.md)
 - [Express](https://github.com/expressjs/express/blob/master/Readme.md)
 - [GraphQL](https://github.com/facebook/graphql/blob/master/README.md) [Apollo React](https://github.com/apollographql/react-apollo/blob/master/README.md) & [Apollo Server](https://github.com/apollographql/apollo-server/blob/master/README.md)
 
