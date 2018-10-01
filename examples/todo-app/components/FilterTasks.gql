@@ -1,0 +1,5 @@
+mutation FilterCompleteTasks($visibility: String!) {
+  filterTasks(visibility: $visibility) @client {
+    visibility
+  }
+}

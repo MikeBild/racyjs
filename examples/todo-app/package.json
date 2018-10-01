@@ -1,0 +1,25 @@
+{
+  "name": "racy-todo-app",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "racy dev",
+    "build": "racy build",
+    "serve": "racy serve",
+    "export": "racy export",
+    "start": "NODE_ENV=production racy build && racy serve",
+    "static": "NODE_ENV=production npm run export && static-server ./dist"
+  },
+  "dependencies": {
+    "apollo-link-error": "^1.1.1",
+    "apollo-link-schema": "^1.1.1",
+    "apollo-link-state": "^0.4.2",
+    "graphql-tools": "^4.0.0",
+    "racy": "file:../..",
+    "schema.js": "^0.1.2",
+    "static-server": "^2.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}

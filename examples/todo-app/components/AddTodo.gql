@@ -1,0 +1,13 @@
+mutation AddTodo($input: AddTodoInput!) {
+  addTodo(input: $input) {
+    result {
+      id
+      rev
+      description
+      done
+    }
+    failure {
+      message
+    }
+  }
+}

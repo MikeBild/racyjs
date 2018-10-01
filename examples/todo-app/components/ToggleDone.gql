@@ -1,0 +1,13 @@
+mutation ToggleDone($id: ID!) {
+  toogleDone(id: $id) {
+    result {
+      id
+      rev
+      description
+      done
+    }
+    failure {
+      message
+    }
+  }
+}

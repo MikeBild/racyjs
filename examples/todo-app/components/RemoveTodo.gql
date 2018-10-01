@@ -1,0 +1,13 @@
+mutation RemoveTodo($id: ID!) {
+  removeTodo(id: $id) {
+    result {
+      id
+      rev
+      description
+      done
+    }
+    failure {
+      message
+    }
+  }
+}

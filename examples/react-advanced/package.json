@@ -1,0 +1,19 @@
+{
+  "name": "racy-react-advanced",
+  "private": true,
+  "scripts": {
+    "dev": "racy dev",
+    "build": "racy build",
+    "serve": "racy serve",
+    "export": "racy export",
+    "start": "NODE_ENV=production racy build && racy serve",
+    "static": "NODE_ENV=production npm run export && static-server ./dist"
+  },
+  "dependencies": {
+    "racy": "../..",
+    "static-server": "^2.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}

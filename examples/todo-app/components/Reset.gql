@@ -1,0 +1,10 @@
+mutation Reset {
+  reset {
+    result {
+      status
+    }
+    failure {
+      message
+    }
+  }
+}
