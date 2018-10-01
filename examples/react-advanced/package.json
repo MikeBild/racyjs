@@ -10,7 +10,7 @@
     "static": "NODE_ENV=production npm run export && static-server ./dist"
   },
   "dependencies": {
-    "racy": "../..",
+    "racy": "file:../..",
     "static-server": "^2.2.1"
   },
   "devDependencies": {

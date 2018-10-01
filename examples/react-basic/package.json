@@ -1,5 +1,5 @@
 {
-  "name": "racy-react-basics",
+  "name": "racy-react-basic",
   "private": true,
   "scripts": {
     "dev": "racy dev",
@@ -10,7 +10,7 @@
     "static": "NODE_ENV=production npm run export && static-server ./dist"
   },
   "dependencies": {
-    "racy": "../..",
+    "racy": "file:../..",
     "static-server": "^2.2.1"
   },
   "devDependencies": {

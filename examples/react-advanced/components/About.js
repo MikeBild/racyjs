@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default () => (
   <F>
-    <h1>Home Page!</h1>
-    <Link to="/about">About Page Link</Link>
+    <h1>About Page!</h1>
+    <Link to="/">Home Page Link</Link>
   </F>
 );
