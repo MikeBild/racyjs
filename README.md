@@ -31,8 +31,8 @@ _`package.json`_
 
 ## CLI
 
-- `racy dev` - dev
-- `racy build` - build
-- `racy export` - export to static HTML sites
-- `racy serve` - serve a build
-- `racy start` - build + serve
+- `racy dev` - Develop
+- `racy build` - Build
+- `racy serve` - Serve a build
+- `racy export` - Export to static HTML sites
+- `racy start` - Build + Serve
