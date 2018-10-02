@@ -24,8 +24,8 @@ const helmetContext = {};
     ? new InMemoryCache().restore(global['DATA'])
     : new InMemoryCache();
   const apolloLink =
-    link && (await link({ config, cache, isServer, isProduction }));
-  const components = app && (await app({ config, isServer, isProduction }));
+    link && (await link({ ...config, cache, isServer, isProduction }));
+  const components = app && (await app({ ...config, isServer, isProduction }));
 
   if (config.graphqlUrl || apolloLink) {
     const client = new ApolloClient({

@@ -60,7 +60,7 @@ const Headline = styled.h1`
   color: blue;
 `;
 
-export default async ({ config }) => (
+export default async () => (
   <F>
     <Helmet>
       <meta charSet="utf-8" />
@@ -101,7 +101,7 @@ import React from 'react';
 import Home from './components/Home';
 import About from './components/About';
 
-export default async ({ config }) => [
+export default async () => [
   { path: '/', exact: true, component: Home },
   { path: '/about', exact: true, component: About },
 ];
