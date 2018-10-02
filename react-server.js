@@ -9,7 +9,7 @@ import reactTreeWalker from 'react-tree-walker';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink, Observable } from 'apollo-link';
-import { isServer } from './index.js';
+import { isServer, isProduction } from './index.js';
 
 class EmptyResultLink extends ApolloLink {
   request(operation, forward) {
@@ -22,8 +22,8 @@ class EmptyResultLink extends ApolloLink {
 
 export default async ({ config, app, link }) => {
   const cache = new InMemoryCache();
-  const components = app && (await app({ config }));
-  const apolloLink = link && (await link({ config, cache }));
+  const apolloLink =
+    link && (await link({ config, cache, isServer, isProduction }));
 
   const client = new ApolloClient({
     queryDeduplication: true,
@@ -36,6 +36,8 @@ export default async ({ config, app, link }) => {
     const helmetContext = {};
     const routerContext = {};
     const sheet = new ServerStyleSheet();
+    const components =
+      app && (await app({ config, req, isServer, isProduction }));
 
     const ServerApp = React.createElement(
       HelmetProvider,

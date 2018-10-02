@@ -1,4 +1,5 @@
 import '@babel/polyfill';
+
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
@@ -19,11 +20,12 @@ const helmetContext = {};
   } catch (e) {}
 
   const { default: app, link } = await import('./app');
-  const components = app && (await app({ config }));
   const cache = global['DATA']
     ? new InMemoryCache().restore(global['DATA'])
     : new InMemoryCache();
-  const apolloLink = link && (await link({ config, cache }));
+  const apolloLink =
+    link && (await link({ config, cache, isServer, isProduction }));
+  const components = app && (await app({ config, isServer, isProduction }));
 
   if (config.graphqlUrl || apolloLink) {
     const client = new ApolloClient({
