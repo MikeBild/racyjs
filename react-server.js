@@ -22,8 +22,12 @@ class EmptyResultLink extends ApolloLink {
 
 export default async ({ config, app, link }) => {
   const cache = new InMemoryCache();
-  const apolloLink =
-    link && (await link({ ...config, cache, isServer, isProduction }));
+  const apolloLinkOptions = Object.assign({}, config, {
+    cache,
+    isServer,
+    isProduction,
+  });
+  const apolloLink = link && (await link(apolloLinkOptions));
 
   const client = new ApolloClient({
     queryDeduplication: true,
@@ -36,8 +40,12 @@ export default async ({ config, app, link }) => {
     const helmetContext = {};
     const routerContext = {};
     const sheet = new ServerStyleSheet();
-    const components =
-      app && (await app({ ...config, request, isServer, isProduction }));
+    const componentOptions = Object.assign({}, config, {
+      request,
+      isServer,
+      isProduction,
+    });
+    const components = app && (await app(componentOptions));
 
     const ServerApp = React.createElement(
       HelmetProvider,
