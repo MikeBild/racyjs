@@ -1,0 +1,14 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "racy dev"
+  },
+  "dependencies": {
+    "racy": "file:../.."
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}
