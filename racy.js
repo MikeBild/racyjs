@@ -6,12 +6,14 @@ const argv = require('yargs')
   .command('serve', 'Serve dynamically')
   .command('export', 'Export statically')
   .command('static', 'Serve statically')
+  .command('introspection <file>', 'Introspection')
   .help('h')
   .alias('h', 'help')
   .strict()
   .locale('en')
   .demandCommand(1).argv;
 
+const fetch = require('isomorphic-unfetch');
 const { parse } = require('path');
 const { writeFile } = require('fs');
 const { promisify } = require('util');
@@ -49,6 +51,26 @@ async function main() {
   mapConfigToEnvVars({ name, version, outFile });
 
   switch (argv._[0]) {
+    case 'introspection':
+      console.log('Fetching fragment types from schema');
+      await emptyDir(BUILDDIR);
+      await emptyDir(CACHEDIR);
+
+      await forkPromise.fn(buildServer, [CURRENTDIR]);
+      const { default: introspectionConfig = {} } = tryRequire(
+        `${BUILDDIR}/server/config`,
+      );
+
+      try {
+        const data = await fetchFragmentTypes(introspectionConfig);
+        console.log(argv.file);
+        console.log(data);
+        process.exit(0);
+      } catch (e) {
+        console.error(e.message);
+        process.exit(1);
+      }
+      break;
     case 'build':
       console.log(`Bundling ${outFile}`);
 
@@ -56,7 +78,10 @@ async function main() {
       await emptyDir(CACHEDIR);
 
       await forkPromise.fn(buildServer, [CURRENTDIR]);
-      const { config: buildConfig = {} } = require(`${BUILDDIR}/server/App`);
+
+      const { default: buildConfig = {} } = tryRequire(
+        `${BUILDDIR}/server/config`,
+      );
       Object.assign(buildConfig, { name, version, outFile });
       mapConfigToEnvVars(buildConfig);
       await buildClient({ outFile }).bundle();
@@ -64,10 +89,7 @@ async function main() {
       process.exit(0);
       break;
     case 'serve':
-      const {
-        default: serveApp,
-        link: serveLink,
-      } = require(`${BUILDDIR}/server/App`);
+      const { default: serveApp } = require(`${BUILDDIR}/server/App`);
 
       const { default: serveConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -92,7 +114,7 @@ async function main() {
       if (serveApp) {
         serveExpress.use(serveExpressExpress.static(`${BUILDDIR}/client`));
         const serveHandler = await require(`${BUILDDIR}/server/react-server`).default(
-          { config: serveConfig, app: serveApp, link: serveLink },
+          { config: serveConfig, app: serveApp },
         );
         serveExpress.use((req, res, next) => serveHandler(req, res, next));
       }
@@ -109,10 +131,7 @@ async function main() {
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       console.log('Bundled');
       console.log('Serve ...');
-      const {
-        default: exportApp,
-        link: exportLink,
-      } = require(`${BUILDDIR}/server/App`);
+      const { default: exportApp } = require(`${BUILDDIR}/server/App`);
 
       const { default: exportConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -136,7 +155,7 @@ async function main() {
 
       exportExpress.use(exportExpressExpress.static(`${BUILDDIR}/client`));
       const exportHandler = await require(`${BUILDDIR}/server/react-server`).default(
-        { config: exportConfig, app: exportApp, link: exportLink },
+        { config: exportConfig, app: exportApp },
       );
 
       exportExpress.use((req, res, next) => exportHandler(req, res, next));
@@ -207,9 +226,7 @@ async function main() {
 
       const clientBundler = buildClient({ outFile });
       await forkPromise.fn(buildServer, [CURRENTDIR]);
-      const { default: devApp, link: devLink } = tryRequire(
-        `${BUILDDIR}/server/App`,
-      );
+      const { default: devApp } = tryRequire(`${BUILDDIR}/server/App`);
 
       const { default: devConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -233,14 +250,14 @@ async function main() {
       mapConfigToEnvVars(devConfig);
 
       let devHandler = await require(`${BUILDDIR}/server/react-server`).default(
-        { config: devConfig, app: devApp, link: devLink },
+        { config: devConfig, app: devApp },
       );
 
       clientBundler.on('bundled', async bundle => {
         await forkPromise.fn(buildServer, [CURRENTDIR]);
         devHandler = await requireUncached(
           `${BUILDDIR}/server/react-server`,
-        ).default({ config: devConfig, app: devApp, link: devLink });
+        ).default({ config: devConfig, app: devApp });
       });
 
       devApp && devExpress.use(clientBundler.middleware());
@@ -430,4 +447,24 @@ async function startExpress(config = {}, graphql, middleware) {
       resolve({ app, express, config });
     });
   });
+}
+
+async function fetchFragmentTypes({ graphqlUrl }) {
+  const query = `__schema {
+          types {
+            kind
+            name
+            possibleTypes {
+              name
+            }
+          }
+        }
+    `;
+  const response = await fetch(graphqlUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ query }),
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  return await response.json();
 }

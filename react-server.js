@@ -7,7 +7,10 @@ import { ServerStyleSheet } from 'styled-components';
 import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import reactTreeWalker from 'react-tree-walker';
 import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher,
+} from 'apollo-cache-inmemory';
 import { ApolloLink, Observable } from 'apollo-link';
 import { isServer, isProduction } from './index.js';
 
@@ -20,20 +23,41 @@ class EmptyResultLink extends ApolloLink {
   }
 }
 
-export default async ({ config, app, link }) => {
-  const cache = new InMemoryCache();
-  const apolloLinkOptions = Object.assign({}, config, {
+export default async ({ config, app }) => {
+  const {
+    createLink,
+    createFragmentTypes,
+    shouldPrefetch,
+    ssrMode,
+    outFile,
+  } = config;
+
+  const fragmentTypesConfig = Object.assign({}, config, {
+    isServer,
+    isProduction,
+  });
+
+  const introspectionQueryResultData =
+    createFragmentTypes && (await createFragmentTypes(fragmentTypesConfig));
+  const cache = introspectionQueryResultData
+    ? new InMemoryCache({
+        fragmentMatcher: new IntrospectionFragmentMatcher({
+          introspectionQueryResultData,
+        }),
+      })
+    : new InMemoryCache();
+
+  const apolloLinkConfig = Object.assign({}, config, {
     cache,
     isServer,
     isProduction,
   });
-  const apolloLink = link && (await link(apolloLinkOptions));
+  const link = createLink && (await createLink(apolloLinkConfig));
 
   const client = new ApolloClient({
     queryDeduplication: true,
     ssrMode: isServer,
-    link:
-      config.shouldPrefetch && apolloLink ? apolloLink : new EmptyResultLink(),
+    link: shouldPrefetch && link ? link : new EmptyResultLink(),
     cache,
   });
 
@@ -41,12 +65,12 @@ export default async ({ config, app, link }) => {
     const helmetContext = {};
     const routerContext = {};
     const sheet = new ServerStyleSheet();
-    const componentOptions = Object.assign({}, config, {
+    const componentConfig = Object.assign({}, config, {
       request,
       isServer,
       isProduction,
     });
-    const components = app && (await app(componentOptions));
+    const components = app && (await app(componentConfig));
 
     const ServerApp = React.createElement(
       HelmetProvider,
@@ -65,7 +89,7 @@ export default async ({ config, app, link }) => {
       ),
     );
 
-    if (config.shouldPrefetch) await getDataFromTree(ServerApp);
+    if (shouldPrefetch) await getDataFromTree(ServerApp);
     else await reactTreeWalker(ServerApp, (element, instance) => ({}));
 
     const { body, helmet, data = {} } = {
@@ -84,11 +108,7 @@ export default async ({ config, app, link }) => {
     ${helmet.noscript}
     ${helmet.script}
     ${helmet.style}
-    ${
-      config.ssrMode
-        ? ''
-        : `<script src="/${config.outFile || 'bundle.js'}" defer></script>`
-    }
+    ${ssrMode ? '' : `<script src="/${outFile || 'bundle.js'}" defer></script>`}
   </head>
   <body ${helmet.bodyAttributes}>
     <div id="root">`,
@@ -104,7 +124,7 @@ export default async ({ config, app, link }) => {
         `
     </div>
     ${
-      !config.ssrMode && data && Object.keys(data).length > 0
+      !ssrMode && data && Object.keys(data).length > 0
         ? `<script>window.DATA=${JSON.stringify(data)};</script>`
         : ''
     }
