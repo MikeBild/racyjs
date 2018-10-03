@@ -17,7 +17,7 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
-export const link = async ({ config, cache }) => {
+export const link = async ({ graphqlUrl, url, cache }) => {
   const stateLink = withClientState({
     cache,
     resolvers: {
@@ -54,10 +54,10 @@ export const link = async ({ config, cache }) => {
     stateLink,
     // new SchemaLink({
     //   schema,
-    //   context: { todos: todosConnector({ config }), config },
+    //   context: { todos: todosConnector({ graphqlUrl }) },
     // }),
     new HttpLink({
-      uri: config.graphqlUrl || `${config.url}/graphql`,
+      uri: graphqlUrl || `${url}/graphql`,
     }),
   ]);
 };
