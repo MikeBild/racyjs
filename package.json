@@ -59,7 +59,7 @@
     "parcel-bundler": "^1.10.1",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
-    "react-apollo": "^2.2.3",
+    "react-apollo": "^2.2.4",
     "react-dom": "^16.5.2",
     "react-helmet": "^5.2.0",
     "react-helmet-async": "^0.2.0-beta.1",
