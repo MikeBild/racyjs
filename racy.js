@@ -45,6 +45,7 @@ async function main() {
     `${process.cwd()}/package.json`,
   );
   const outFile = name ? `${name}.bundle.js` : '';
+  mapConfigToEnvVars({ name, version, outFile });
 
   switch (argv._[0]) {
     case 'build':
