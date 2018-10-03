@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 const argv = require('yargs')
   .usage('Usage: $0 <command>')
-  .command('build', 'Build')
-  .command('export', 'Export')
-  .command('serve', 'Serve')
-  .command('dev', 'Develop')
+  .command('dev', 'Development mode')
+  .command('build', 'Build dynamically')
+  .command('serve', 'Serve dynamically')
+  .command('export', 'Export statically')
+  .command('static', 'Serve statically')
   .help('h')
   .alias('h', 'help')
   .strict()
@@ -153,27 +154,50 @@ async function main() {
 
       const fetcher = allRoutes
         .map(async ({ path }) => {
-          if (!path) return null;
-
-          const response = await fetch(`${exportConfig.url}${path}`);
+          const response = path
+            ? await fetch(`${exportConfig.url}${path}`)
+            : await fetch(`${exportConfig.url}/404`);
 
           return { path, html: await response.text() };
         })
         .map(async res => {
           const { path, html } = await res;
-          if (!path) return;
 
-          await ensureDir(`${PUBLICDIR}${path}`);
-          await writeToFile(`${PUBLICDIR}${path}/index.html`, html, {
-            encoding: 'utf8',
-            flag: 'w+',
-          });
+          if (!path) {
+            await writeToFile(`${PUBLICDIR}/404.html`, html, {
+              encoding: 'utf8',
+              flag: 'w+',
+            });
+          } else {
+            await ensureDir(`${PUBLICDIR}${path}`);
+            await writeToFile(`${PUBLICDIR}${path}/index.html`, html, {
+              encoding: 'utf8',
+              flag: 'w+',
+            });
+          }
 
           return { path, html };
         });
       await Promise.all(fetcher);
       console.log('Exported');
       process.exit(0);
+      break;
+    case 'static':
+      const { default: staticConfig = {} } = tryRequire(
+        `${BUILDDIR}/server/config`,
+      );
+      mapConfigToEnvVars(staticConfig);
+      const {
+        app: staticExpress,
+        express: staticExpressExpress,
+      } = await startExpress(staticConfig);
+
+      staticExpress.use(staticExpressExpress.static(PUBLICDIR));
+      staticExpress.use(
+        '*',
+        staticExpressExpress.static(`${PUBLICDIR}/404.html`),
+      );
+      return { config: staticConfig };
       break;
     case 'dev':
     default:

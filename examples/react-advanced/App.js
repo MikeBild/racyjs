@@ -6,6 +6,7 @@ export default async ({ isServer, isProduction, request, port }) => {
   const { default: Home } = await import('./components/Home');
   const { default: About } = await import('./components/About');
   const { default: Page } = await import('./components/Page');
+  const { default: NotFound } = await import('./components/NotFound');
 
   // Create dynamically routes based on external data
   const routes = data.map(itm => ({
@@ -25,5 +26,6 @@ export default async ({ isServer, isProduction, request, port }) => {
     },
     { path: '/about', exact: true, component: About },
     ...routes,
+    { component: NotFound },
   ];
 };

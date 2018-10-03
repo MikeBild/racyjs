@@ -6,14 +6,14 @@ const Headline = styled.h1`
   color: blue;
 `;
 
-export default async ({ name, version }) => (
+export default async ({ name, version, port }) => (
   <F>
     <Helmet>
       <meta charSet="utf-8" />
-      <title>
-        React-App {name} {version}
-      </title>
+      <title>React-App</title>
     </Helmet>
-    <Headline>Racy Basic App Example</Headline>
+    <Headline>
+      Racy Basic App Example {name} {version}
+    </Headline>
   </F>
 );

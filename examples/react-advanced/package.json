@@ -7,11 +7,10 @@
     "serve": "racy serve",
     "export": "racy export",
     "start": "NODE_ENV=production racy build && racy serve",
-    "static": "NODE_ENV=production npm run export && static-server ./dist"
+    "static": "NODE_ENV=production npm run export && racy static"
   },
   "dependencies": {
-    "racy": "file:../..",
-    "static-server": "^2.2.1"
+    "racy": "file:../.."
   },
   "devDependencies": {
     "@babel/core": "^7.1.2"
