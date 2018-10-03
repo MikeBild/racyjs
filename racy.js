@@ -54,7 +54,7 @@ async function main() {
       await emptyDir(CACHEDIR);
 
       await forkPromise.fn(buildServer, [CURRENTDIR]);
-      const { config: buildConfig = {} } = require(`${BUILDDIR}/server/app`);
+      const { config: buildConfig = {} } = require(`${BUILDDIR}/server/App`);
       Object.assign(buildConfig, { name, version, outFile });
       mapConfigToEnvVars(buildConfig);
       await buildClient({ outFile }).bundle();
@@ -65,7 +65,7 @@ async function main() {
       const {
         default: serveApp,
         link: serveLink,
-      } = require(`${BUILDDIR}/server/app`);
+      } = require(`${BUILDDIR}/server/App`);
 
       const { default: serveConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -110,7 +110,7 @@ async function main() {
       const {
         default: exportApp,
         link: exportLink,
-      } = require(`${BUILDDIR}/server/app`);
+      } = require(`${BUILDDIR}/server/App`);
 
       const { default: exportConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -183,7 +183,7 @@ async function main() {
       const clientBundler = buildClient({ outFile });
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       const { default: devApp, link: devLink } = tryRequire(
-        `${BUILDDIR}/server/app`,
+        `${BUILDDIR}/server/App`,
       );
 
       const { default: devConfig = {} } = tryRequire(

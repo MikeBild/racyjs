@@ -47,9 +47,9 @@ _`package.json`_
 
 ## How to create a basic React-App?
 
-Just create a `app.js` in your project root folder.
+Just create a `App.js` in your project root folder.
 
-_`app.js`_
+_`App.js`_
 
 ```jsx
 import React, { Fragment as F } from 'react';
@@ -94,7 +94,7 @@ export default {
 
 ## How to map components to different routes?
 
-_`app.js`_
+_`App.js`_
 
 ```jsx
 import React from 'react';
