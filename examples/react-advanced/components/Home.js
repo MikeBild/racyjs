@@ -1,6 +1,6 @@
 import React, { Fragment as F } from 'react';
 
-export default ({ pages, message }) => (
+export default ({ pages }) => (
   <F>
     <h1>Home Page</h1>
     <ul>
@@ -14,6 +14,5 @@ export default ({ pages, message }) => (
           </li>
         ))}
     </ul>
-    <pre>{message}</pre>
   </F>
 );

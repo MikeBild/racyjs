@@ -1570,9 +1570,9 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   integrity sha512-Rf9Sbm2KS7s6Rk8iNeI5zJdquqctXBXAfy/bb1tCCYRds5RAaHNdyt2D4z8TSRToDkYsAwiSBV/bFHR+4IgTiw==
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000888:
-  version "1.0.30000888"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000888.tgz#22edb50d91dd70612b5898e3b36f460600c6492f"
-  integrity sha512-vftg+5p/lPsQGpnhSo/yBuYL36ai/cyjLvU3dOPJY1kkKrekLWIy8SLm+wzjX0hpCUdFTasC4/ZT7uqw4rKOnQ==
+  version "1.0.30000889"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000889.tgz#53e266c83e725ad3bd2e4a3ea76d5031a8aa4c3e"
+  integrity sha512-MFxcQ6x/LEEoaIhO7Zdb7Eg8YyNONN+WBnS5ERJ0li2yRw51+i4xXUNxnLaveTb/4ZoJqsWKEmlomhG2pYzlQA==
 
 capture-stack-trace@^1.0.0:
   version "1.0.1"
@@ -5297,7 +5297,7 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     parcel-bundler "^1.10.1"
     prop-types "^15.6.2"
     react "^16.5.2"
-    react-apollo "^2.2.3"
+    react-apollo "^2.2.4"
     react-dom "^16.5.2"
     react-helmet "^5.2.0"
     react-helmet-async "^0.2.0-beta.1"
@@ -5359,7 +5359,7 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-apollo@^2.2.3:
+react-apollo@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/react-apollo/-/react-apollo-2.2.4.tgz#05b2a91deb4d5f30d2511fc663abc465b219435e"
   integrity sha512-haS5R30Qvteb65ZLfWomUZQh47VU4ld4Kof3zlqdbLOrYPt3/DdVZC8ZFPZSxd5zPeIJtZqpUfAxD1WHVoMPIA==
