@@ -6,7 +6,7 @@ const Headline = styled.h1`
   color: blue;
 `;
 
-export default async ({ config }) => (
+export default async () => (
   <F>
     <Helmet>
       <meta charSet="utf-8" />

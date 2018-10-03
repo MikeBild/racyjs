@@ -1,19 +1,19 @@
 import React, { Fragment as F } from 'react';
-import { Link } from 'react-router-dom';
 
-export default ({ pages }) => (
+export default ({ pages, message }) => (
   <F>
-    <h1>Home Page!</h1>
+    <h1>Home Page</h1>
     <ul>
       <li>
-        <Link to="/about">About Page Link</Link>
+        <a href="/about">About Page</a>
       </li>
       {pages &&
         pages.map(({ id }) => (
           <li key={id}>
-            <Link to={`/page/${id}`}>Page {id} Link</Link>
+            <a href={`/page/${id}`}>Page {id}</a>
           </li>
         ))}
     </ul>
+    <pre>{message}</pre>
   </F>
 );
