@@ -1,5 +1,4 @@
 export default {
-  port: process.env.PORT || 8080,
+  port: process.env.PORT || 8090,
   todosUrl: process.env.TODOSURL,
-  graphqlUrl: process.env.GRAPHQLURL,
 };
