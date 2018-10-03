@@ -47,7 +47,7 @@ _`package.json`_
 
 ## How to create a basic React-App?
 
-Just create a `App.js` in your project root folder.
+Just enter `yarn add react` and create a `App.js` in your project root folder.
 
 _`App.js`_
 
@@ -75,7 +75,7 @@ export default async () => (
 
 ## How to customize the default configuration?
 
-Just create a _`config.js`_ in your project root folder.
+Just create a `config.js` in your project root folder.
 
 _`config.js`_
 
