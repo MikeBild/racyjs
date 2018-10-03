@@ -32,7 +32,8 @@ export default async ({ config, app, link }) => {
   const client = new ApolloClient({
     queryDeduplication: true,
     ssrMode: isServer,
-    link: config.shouldPrefetch ? apolloLink : new EmptyResultLink(),
+    link:
+      config.shouldPrefetch && apolloLink ? apolloLink : new EmptyResultLink(),
     cache,
   });
 
