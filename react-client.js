@@ -18,7 +18,10 @@ const helmetContext = {};
   try {
     config = require('./config').default;
   } catch (e) {}
-
+  Object.assign(config, {
+    name: process.env.NAME,
+    version: process.env.VERSION,
+  });
   const { default: app, link } = await import('./App');
   const cache = global['DATA']
     ? new InMemoryCache().restore(global['DATA'])
