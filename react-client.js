@@ -19,7 +19,7 @@ const helmetContext = {};
     config = require('./config').default;
   } catch (e) {}
 
-  const { default: app, link } = await import('./app');
+  const { default: app, link } = await import('./App');
   const cache = global['DATA']
     ? new InMemoryCache().restore(global['DATA'])
     : new InMemoryCache();

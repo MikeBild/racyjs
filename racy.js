@@ -41,17 +41,23 @@ main()
 
 async function main() {
   updateNotifier({ pkg }).notify();
+  const { name = '', version = '' } = tryRequire(
+    `${process.cwd()}/package.json`,
+  );
+  const outFile = name ? `${name}.bundle.js` : '';
 
   switch (argv._[0]) {
     case 'build':
-      console.log('Bundling...');
+      console.log(`Bundling ${outFile}`);
+
       await emptyDir(BUILDDIR);
       await emptyDir(CACHEDIR);
 
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       const { config: buildConfig = {} } = require(`${BUILDDIR}/server/app`);
+      Object.assign(buildConfig, { name, version, outFile });
       mapConfigToEnvVars(buildConfig);
-      await buildClient().bundle();
+      await buildClient({ outFile }).bundle();
       console.log('Bundled...');
       process.exit(0);
       break;
@@ -64,6 +70,7 @@ async function main() {
       const { default: serveConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
+      Object.assign(serveConfig, { name, version, outFile });
 
       const { default: serveMiddleware } = tryRequire(
         `${BUILDDIR}/server/express-server`,
@@ -95,8 +102,8 @@ async function main() {
       await emptyDir(CACHEDIR);
 
       const fetch = require('isomorphic-unfetch');
-      console.log('Bundling...');
-      await buildClient(PUBLICDIR).bundle();
+      console.log(`Bundling ${outFile}`);
+      await buildClient({ outFile, outDir: PUBLICDIR }).bundle();
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       console.log('Bundled');
       console.log('Serve ...');
@@ -108,6 +115,7 @@ async function main() {
       const { default: exportConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
+      Object.assign(exportConfig, { name, version, outFile });
 
       const { default: exportMiddleware } = tryRequire(
         `${BUILDDIR}/server/express-server`,
@@ -172,7 +180,7 @@ async function main() {
       await emptyDir(PUBLICDIR);
       await emptyDir(CACHEDIR);
 
-      const clientBundler = buildClient();
+      const clientBundler = buildClient({ outFile });
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       const { default: devApp, link: devLink } = tryRequire(
         `${BUILDDIR}/server/app`,
@@ -181,6 +189,7 @@ async function main() {
       const { default: devConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
+      Object.assign(devConfig, { name, version, outFile });
 
       const { default: devMiddleware } = tryRequire(
         `${BUILDDIR}/server/express-server`,
@@ -195,7 +204,9 @@ async function main() {
         devGraphql,
         devMiddleware,
       );
+
       mapConfigToEnvVars(devConfig);
+
       let devHandler = await require(`${BUILDDIR}/server/react-server`).default(
         { config: devConfig, app: devApp, link: devLink },
       );
@@ -241,12 +252,13 @@ function tryRequire(module) {
   }
 }
 
-function buildClient(outDir) {
-  return new Bundler(`${__dirname}/client.js`, {
+function buildClient({ outDir, outFile = 'bundle.js' }) {
+  return new Bundler(`${__dirname}/react-client.js`, {
     watch: !isProduction,
     minify: isProduction,
     sourceMaps: !isProduction,
     outDir: outDir || `${BUILDDIR}/client`,
+    outFile,
     target: 'browser',
     cache: true,
     cacheDir: CACHEDIR,
@@ -261,31 +273,8 @@ async function buildServer(path, done) {
   const BUILDDIR = process.env.BUILDDIR || `${process.cwd()}/.racy`;
   const CACHEDIR = process.env.CACHEDIR || `${process.cwd()}/.cache`;
 
-  const clientAppBundler = new Bundler(
-    [`${process.cwd()}/config.js`, `${process.cwd()}/app.js`],
-    {
-      watch: false,
-      minify: isProduction,
-      sourceMaps: !isProduction,
-      outDir: `${BUILDDIR}/client`,
-      target: 'browser',
-      cache: true,
-      cacheDir: CACHEDIR,
-      logLevel: 0,
-      autoInstall: false,
-    },
-  );
-
-  try {
-    await clientAppBundler.bundle();
-    console.log('Client: enabled');
-  } catch (e) {
-    console.warn('Client: disabled');
-    if (!e.message.includes('No entries found')) console.error(e);
-  }
-
   const serverAppBundler = new Bundler(
-    [`${process.cwd()}/config.js`, `${process.cwd()}/app.js`],
+    [`${process.cwd()}/config.js`, `${process.cwd()}/App.js`],
     {
       watch: false,
       minify: isProduction,
@@ -301,9 +290,29 @@ async function buildServer(path, done) {
 
   try {
     await serverAppBundler.bundle();
-    console.log('App-Server: enabled');
+    console.log('React-App: enabled');
   } catch (e) {
-    console.warn('App-Server: disabled');
+    console.warn('React-App: disabled');
+    if (!e.message.includes('No entries found')) console.error(e);
+  }
+
+  const reactServerBundler = new Bundler(`${path}/react-server.js`, {
+    watch: false,
+    minify: isProduction,
+    sourceMaps: !isProduction,
+    outDir: `${BUILDDIR}/server`,
+    cacheDir: CACHEDIR,
+    target: 'node',
+    cache: true,
+    logLevel: 0,
+    autoInstall: false,
+  });
+
+  try {
+    await reactServerBundler.bundle();
+    console.log('React-Server: enabled');
+  } catch (e) {
+    console.warn('React-Server: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
 
@@ -350,26 +359,6 @@ async function buildServer(path, done) {
     console.log('Express-Server: enabled');
   } catch (e) {
     console.warn('Express-Server: disabled');
-    if (!e.message.includes('No entries found')) console.error(e);
-  }
-
-  const reactServerBundler = new Bundler(`${path}/react-server.js`, {
-    watch: false,
-    minify: isProduction,
-    sourceMaps: !isProduction,
-    outDir: `${BUILDDIR}/server`,
-    cacheDir: CACHEDIR,
-    target: 'node',
-    cache: true,
-    logLevel: 0,
-    autoInstall: false,
-  });
-
-  try {
-    await reactServerBundler.bundle();
-    console.log('React-Server: enabled');
-  } catch (e) {
-    console.warn('React-Server: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
 

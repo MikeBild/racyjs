@@ -84,7 +84,11 @@ export default async ({ config, app, link }) => {
     ${helmet.noscript}
     ${helmet.script}
     ${helmet.style}
-    ${config.ssrMode ? '' : '<script src="/client.js" defer></script>'}
+    ${
+      config.ssrMode
+        ? ''
+        : `<script src="/${config.outFile || 'bundle.js'}" defer></script>`
+    }
   </head>
   <body ${helmet.bodyAttributes}>
     <div id="root">`,

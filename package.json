@@ -7,7 +7,7 @@
     "node": ">=8.10.0"
   },
   "alias": {
-    "./app": "../../app.js",
+    "./App": "../../App.js",
     "./config": "../../config.js"
   },
   "main": "./index.js",
