@@ -3,7 +3,7 @@ import '@babel/polyfill';
 import React from 'react';
 import { render, hydrate } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { matchRoutes, renderRoutes } from 'react-router-config';
+import { renderRoutes } from 'react-router-config';
 import { HelmetProvider } from 'react-helmet-async';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -27,28 +27,6 @@ const helmetContext = {};
     link && (await link({ ...config, cache, isServer, isProduction }));
   const components = app && (await app({ ...config, isServer, isProduction }));
   const show = isProduction ? hydrate : render;
-
-  if (Array.isArray(components)) {
-    const branches = matchRoutes(
-      components,
-      global.location && global.location.pathname,
-    );
-
-    const loadDataFromBranches = branches.map(async ({ route, match }) => {
-      const data = route.loadData && (await route.loadData(match));
-      return { route, data };
-    });
-
-    const allData = await Promise.all(loadDataFromBranches);
-
-    allData.filter(Boolean).forEach(({ route, data }) => {
-      console.log('refetch');
-      console.log({ route, data });
-      const Component = route.component;
-      route.component = props =>
-        React.createElement(Component, Object.assign({}, props, data));
-    });
-  }
 
   if (config.graphqlUrl || apolloLink) {
     const client = new ApolloClient({
