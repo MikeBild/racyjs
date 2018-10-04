@@ -41,12 +41,13 @@ _`package.json`_
 
 ## CLI
 
-- `racy dev` - Development mode
-- `racy build` - Build dynamically
-- `racy serve` - Serve dynamically
-- `racy export` - Export statically
-- `racy static` - Serve statically
-- `racy start` - Build + Serve dynamically
+- `racy dev` - Develop an App
+- `racy build` - Build an App for dynamically serving
+- `racy serve` - Dynamically serve an App
+- `racy export` - Export an App for statically serving
+- `racy static` - Statically serve an App
+- `racy graphql schema` - Fetch and save GraphQL schema to a file
+- `racy graphql fragments` - Fetch and save GraphQL fragment types to a file
 
 ## How to create a basic React-App?
 

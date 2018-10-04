@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 const argv = require('yargs')
   .usage('Usage: $0 <command>')
-  .command('dev', 'Development mode')
-  .command('build', 'Build dynamically')
-  .command('serve', 'Serve dynamically')
-  .command('export', 'Export statically')
-  .command('static', 'Serve statically')
-  .command('graphql', 'Introspection query of [fragments|schema]', yargs => {
+  .command('dev', 'Develop an App')
+  .command('build', 'Build an App for dynamically serving')
+  .command('serve', 'Dynamically serve an App')
+  .command('export', 'Export an App for statically serving')
+  .command('static', 'Statically serve an App')
+  .command('graphql', 'Fetch and save [fragments|schema] files', yargs => {
     return yargs
       .usage('Usage: $0 graphql <subcommand>')
-      .command('fragments <file>', 'Fragment types introspection query')
-      .command('schema <file>', 'Schema introspection query')
+      .command('schema <file>', 'Fetch and save GraphQL schema to a file')
+      .command(
+        'fragments <file>',
+        'Fetch and save GraphQL fragment types to a file',
+      )
       .demandCommand(2);
   })
   .help('h')
