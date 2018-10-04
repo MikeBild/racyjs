@@ -1,0 +1,18 @@
+#import "./GithubStatusFragment.gql"
+
+fragment GithubCommit on GithubCommit {
+  sha
+  message
+  status {
+    ...GithubStatus
+  }
+  author {
+    ... on GithubUser {
+      login
+      id
+    }
+    ... on GithubCommitAuthor {
+      email
+    }
+  }
+}

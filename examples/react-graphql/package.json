@@ -1,0 +1,22 @@
+{
+  "name": "react-graphql",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "racy dev",
+    "build": "racy build",
+    "serve": "racy serve",
+    "export": "racy export",
+    "start": "NODE_ENV=production racy build && racy serve",
+    "static": "NODE_ENV=production npm run export && racy static",
+    "graphql:fragments": "racy graphql fragments fragmentTypes.json",
+    "graphql:schema": "racy graphql schema schema.gql"
+  },
+  "dependencies": {
+    "racy": "file:../..",
+    "react": "^16.5.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}

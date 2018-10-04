@@ -1,0 +1,7 @@
+fragment GithubStatus on GithubStatus {
+  state
+  description
+  target_url
+  context
+  updated_at
+}
