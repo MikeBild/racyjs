@@ -37,6 +37,7 @@ _`package.json`_
 - [How to customize the default configuration?](#how-to-customize-the-default-configuration)
 - [How to map a component to a route?](#How-to-map-a-component-to-a-route)
 - [How to use dynamic imports and code splitting?](#how-to-use-dynamic-imports-and-code-splitting)
+- [How to use GraphQL queries?](#how-to-use-graphql-queries)
 
 ## CLI
 
@@ -136,3 +137,48 @@ export default async () => {
 ```
 
 - [React Advanced Example](examples/react-advanced/README.md)
+
+## How to use GraphQL queries?
+
+_`App.js`_
+
+```jsx
+import React, { Fragment as F } from 'react';
+import { Query } from 'react-apollo';
+
+import GITHUB_QUERY from './Github.gql';
+
+export default async ({ name, version }) => {
+  return (
+    <F>
+      <h1>
+        App: {name} {version}
+      </h1>
+      <Query query={GITHUB_QUERY}>
+        {({ data, error, loading }) => {
+          if (loading) return <div>loading ...</div>;
+          if (error) return <div>{error.message}</div>;
+          return <pre>{JSON.stringify(data, null, 4)}</pre>;
+        }}
+      </Query>
+    </F>
+  );
+};
+```
+
+_`config.js`_
+
+```javascript
+export default {
+  // Listen on port
+  port: process.env.PORT || 8080,
+  // GraphQL URL for GraphQL queries
+  graphqlUrl: process.env.GRAPHQLURL || 'https://www.graphqlhub.com/graphql',
+  // Import fragment types file to resolve union and interface types
+  createFragmentTypes: async () => await import('./fragmentTypes.json'),
+  // Enable prefetching on server-side
+  shouldPrefetch: true,
+};
+```
+
+- [React GraphQL Example](examples/react-graphql/README.md)

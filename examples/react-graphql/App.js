@@ -1,6 +1,7 @@
 import React, { Fragment as F } from 'react';
-import GITHUB_QUERY from './Github.gql';
 import { Query } from 'react-apollo';
+
+import GITHUB_QUERY from './Github.gql';
 
 export default async ({ name, version }) => {
   return (

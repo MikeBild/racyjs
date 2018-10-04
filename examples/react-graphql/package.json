@@ -9,8 +9,7 @@
     "export": "racy export",
     "start": "NODE_ENV=production racy build && racy serve",
     "static": "NODE_ENV=production npm run export && racy static",
-    "graphql:fragments": "racy graphql fragments fragmentTypes.json",
-    "graphql:schema": "racy graphql schema schema.gql"
+    "graphql:fragments": "racy graphql fragments fragmentTypes.json"
   },
   "dependencies": {
     "racy": "file:../..",
