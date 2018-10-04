@@ -38,6 +38,7 @@ _`package.json`_
 - [How to map a component to a route?](#How-to-map-a-component-to-a-route)
 - [How to use dynamic imports and code splitting?](#how-to-use-dynamic-imports-and-code-splitting)
 - [How to use GraphQL queries?](#how-to-use-graphql-queries)
+- [How to extend Express with additional middleware?](#how-to-extend-express-with-additional-middleware)
 
 ## CLI
 
@@ -183,3 +184,26 @@ export default {
 ```
 
 - [React GraphQL Example](examples/react-graphql/README.md)
+
+## How to extend Express with additional middleware?
+
+Just create a `express-server.js` in your project root folder.
+
+_`express-server.js`_
+
+```javascript
+import morgan from 'morgan';
+import cors from 'cors';
+import compression from 'compression';
+import examples from './examples';
+
+export default ({ config, app }) => {
+  app.use(morgan('combined'));
+  app.use(cors());
+  app.use(compression());
+
+  app.use('/api/examples', examples);
+};
+```
+
+- [Express Middleware Example](examples/express-server/README.md)
