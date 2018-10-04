@@ -31,9 +31,9 @@ _`package.json`_
 }
 ```
 
-## How to ...
+## How to
 
-- [How to create a basic React-App?](#how-to-create-a-basic-react-app)
+- [How to create a simple React-App?](#how-to-create-a-simple-react-app)
 - [How to customize the default configuration?](#how-to-customize-the-default-configuration)
 - [How to map a component to a route?](#How-to-map-a-component-to-a-route)
 - [How to use dynamic imports and code splitting?](#how-to-use-dynamic-imports-and-code-splitting)
@@ -49,7 +49,7 @@ _`package.json`_
 - `racy graphql schema` - Fetch and save GraphQL schema to a file
 - `racy graphql fragments` - Fetch and save GraphQL fragment types to a file
 
-## How to create a basic React-App?
+## How to create a simple React-App?
 
 Just enter `yarn add react` and create a `App.js` in your project root folder.
 
