@@ -13,6 +13,7 @@ import {
 } from 'apollo-cache-inmemory';
 import { ApolloLink, Observable } from 'apollo-link';
 import { isServer, isProduction } from './index.js';
+import { HttpLink } from 'apollo-link-http';
 
 class EmptyResultLink extends ApolloLink {
   request(operation, forward) {
@@ -30,6 +31,7 @@ export default async ({ config, app }) => {
     shouldPrefetch,
     ssrMode,
     outFile,
+    graphqlUrl,
   } = config;
 
   const fragmentTypesConfig = Object.assign({}, config, {
@@ -52,12 +54,14 @@ export default async ({ config, app }) => {
     isServer,
     isProduction,
   });
-  const link = createLink && (await createLink(apolloLinkConfig));
+  const link =
+    (createLink && (await createLink(apolloLinkConfig))) ||
+    (graphqlUrl && new HttpLink({ uri: graphqlUrl }));
 
   const client = new ApolloClient({
     queryDeduplication: true,
     ssrMode: isServer,
-    link: shouldPrefetch && link ? link : new EmptyResultLink(),
+    link: shouldPrefetch ? link : new EmptyResultLink(),
     cache,
   });
 
