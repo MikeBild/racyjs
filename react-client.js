@@ -36,6 +36,7 @@ const helmetContext = {};
     createFragmentTypes && (await createFragmentTypes(fragmentTypesConfig));
 
   const { default: app } = await import('./App');
+
   let cache = introspectionQueryResultData
     ? new InMemoryCache({
         fragmentMatcher: new IntrospectionFragmentMatcher({

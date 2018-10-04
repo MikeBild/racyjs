@@ -108,12 +108,15 @@ async function main() {
       );
       Object.assign(buildConfig, { name, version, outFile });
       mapConfigToEnvVars(buildConfig);
-      await buildClient({ outFile }).bundle();
+
+      try {
+        await buildClient({ outFile }).bundle();
+      } catch (e) {}
       console.log('Bundled');
       process.exit(0);
       break;
     case 'serve':
-      const { default: serveApp } = require(`${BUILDDIR}/server/App`);
+      const { default: serveApp } = tryRequire(`${BUILDDIR}/server/App`);
 
       const { default: serveConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
@@ -356,9 +359,7 @@ async function buildServer(path, done) {
 
   try {
     await serverAppBundler.bundle();
-    console.log('React-App: enabled');
   } catch (e) {
-    console.warn('React-App: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
 
@@ -376,9 +377,7 @@ async function buildServer(path, done) {
 
   try {
     await reactServerBundler.bundle();
-    console.log('React-Server: enabled');
   } catch (e) {
-    console.warn('React-Server: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
 
