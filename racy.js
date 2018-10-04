@@ -6,11 +6,17 @@ const argv = require('yargs')
   .command('serve', 'Serve dynamically')
   .command('export', 'Export statically')
   .command('static', 'Serve statically')
-  .command('introspection <file>', 'Introspection')
+  .command('graphql', 'Introspection query of [fragments|schema]', yargs => {
+    return yargs
+      .usage('Usage: $0 graphql <subcommand>')
+      .command('fragments <file>', 'Fragment types introspection query')
+      .command('schema <file>', 'Schema introspection query')
+      .demandCommand(2);
+  })
   .help('h')
   .alias('h', 'help')
-  .strict()
   .locale('en')
+  .strict()
   .demandCommand(1).argv;
 
 const fetch = require('isomorphic-unfetch');
@@ -51,25 +57,40 @@ async function main() {
   mapConfigToEnvVars({ name, version, outFile });
 
   switch (argv._[0]) {
-    case 'introspection':
-      console.log('Fetching fragment types from schema');
-      await emptyDir(BUILDDIR);
-      await emptyDir(CACHEDIR);
+    case 'graphql':
+      switch (argv._[1]) {
+        case 'schema':
+          console.log(`Fetching schema to ${argv.file}`);
+          console.warn('Not implemented');
+          process.exit(1);
+          break;
+        case 'fragments':
+        default:
+          console.log(`Fetching fragment types to ${argv.file}`);
+          await emptyDir(BUILDDIR);
+          await emptyDir(CACHEDIR);
 
-      await forkPromise.fn(buildServer, [CURRENTDIR]);
-      const { default: introspectionConfig = {} } = tryRequire(
-        `${BUILDDIR}/server/config`,
-      );
+          await forkPromise.fn(buildServer, [CURRENTDIR]);
+          const { default: introspectionConfig = {} } = tryRequire(
+            `${BUILDDIR}/server/config`,
+          );
 
-      try {
-        const data = await fetchFragmentTypes(introspectionConfig);
-        console.log(argv.file);
-        console.log(data);
-        process.exit(0);
-      } catch (e) {
-        console.error(e.message);
-        process.exit(1);
+          try {
+            const data = await fetchFragmentTypes(introspectionConfig);
+            await writeToFile(`${process.cwd()}/${argv.file}`, data, {
+              encoding: 'utf8',
+              flag: 'w+',
+            });
+
+            console.log(`Fragment type file written to ${argv.file}`);
+            process.exit(0);
+          } catch (e) {
+            console.error(e.message);
+            process.exit(1);
+          }
+          break;
       }
+
       break;
     case 'build':
       console.log(`Bundling ${outFile}`);
@@ -85,7 +106,7 @@ async function main() {
       Object.assign(buildConfig, { name, version, outFile });
       mapConfigToEnvVars(buildConfig);
       await buildClient({ outFile }).bundle();
-      console.log('Bundled...');
+      console.log('Bundled');
       process.exit(0);
       break;
     case 'serve':
@@ -466,5 +487,5 @@ async function fetchFragmentTypes({ graphqlUrl }) {
     body: JSON.stringify({ query }),
   });
   if (!response.ok) throw new Error(response.statusText);
-  return await response.json();
+  return (await response.json()).data;
 }
