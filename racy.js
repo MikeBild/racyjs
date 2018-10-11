@@ -332,7 +332,7 @@ function buildClient({ outDir, outFile }) {
     cache: true,
     cacheDir: CACHEDIR,
     logLevel: 0,
-    autoInstall: false,
+    autoinstall: false,
   });
 }
 
@@ -342,20 +342,37 @@ async function buildServer(path, done) {
   const BUILDDIR = process.env.BUILDDIR || `${process.cwd()}/.racy`;
   const CACHEDIR = process.env.CACHEDIR || `${process.cwd()}/.cache`;
 
-  const serverAppBundler = new Bundler(
-    [`${process.cwd()}/config.js`, `${process.cwd()}/App.js`],
-    {
-      watch: false,
-      minify: isProduction,
-      sourceMaps: !isProduction,
-      outDir: `${BUILDDIR}/server`,
-      target: 'node',
-      cache: true,
-      cacheDir: CACHEDIR,
-      logLevel: 0,
-      autoInstall: false,
-    },
-  );
+  const serverConfigBundler = new Bundler(`${process.cwd()}/config.js`, {
+    watch: !isProduction,
+    minify: isProduction,
+    sourceMaps: !isProduction,
+    outDir: `${BUILDDIR}/server`,
+    target: 'node',
+    cache: true,
+    cacheDir: CACHEDIR,
+    logLevel: 0,
+    autoinstall: false,
+  });
+
+  try {
+    await serverConfigBundler.bundle();
+    console.log('Configure: enabled');
+  } catch (e) {
+    console.warn('Configure: disabled');
+    if (!e.message.includes('No entries found')) console.error(e);
+  }
+
+  const serverAppBundler = new Bundler(`${process.cwd()}/App.js`, {
+    watch: !isProduction,
+    minify: isProduction,
+    sourceMaps: !isProduction,
+    outDir: `${BUILDDIR}/server`,
+    target: 'node',
+    cache: true,
+    cacheDir: CACHEDIR,
+    logLevel: 0,
+    autoinstall: false,
+  });
 
   try {
     await serverAppBundler.bundle();
@@ -364,7 +381,7 @@ async function buildServer(path, done) {
   }
 
   const reactServerBundler = new Bundler(`${path}/react-server.js`, {
-    watch: false,
+    watch: !isProduction,
     minify: isProduction,
     sourceMaps: !isProduction,
     outDir: `${BUILDDIR}/server`,
@@ -372,19 +389,21 @@ async function buildServer(path, done) {
     target: 'node',
     cache: true,
     logLevel: 0,
-    autoInstall: false,
+    autoinstall: false,
   });
 
   try {
     await reactServerBundler.bundle();
+    console.log('App-Server: enabled');
   } catch (e) {
+    console.log('App-Server: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
 
   const graphQLServerBundler = new Bundler(
     `${process.cwd()}/graphql-server.js`,
     {
-      watch: false,
+      watch: !isProduction,
       minify: isProduction,
       sourceMaps: !isProduction,
       outDir: `${BUILDDIR}/server`,
@@ -392,7 +411,7 @@ async function buildServer(path, done) {
       cache: true,
       cacheDir: CACHEDIR,
       logLevel: 0,
-      autoInstall: false,
+      autoinstall: false,
     },
   );
 
@@ -407,7 +426,7 @@ async function buildServer(path, done) {
   const expressServerBundler = new Bundler(
     `${process.cwd()}/express-server.js`,
     {
-      watch: false,
+      watch: !isProduction,
       minify: isProduction,
       sourceMaps: !isProduction,
       outDir: `${BUILDDIR}/server`,
@@ -415,7 +434,7 @@ async function buildServer(path, done) {
       cache: true,
       cacheDir: CACHEDIR,
       logLevel: 0,
-      autoInstall: false,
+      autoinstall: false,
     },
   );
 
