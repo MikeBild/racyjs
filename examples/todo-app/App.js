@@ -1,63 +1,25 @@
 import React from 'react';
-import Todos from './components/Todos';
-import { withClientState } from 'apollo-link-state';
-import { onError } from 'apollo-link-error';
-import { ApolloLink } from 'apollo-link';
-import { HttpLink } from 'apollo-link-http';
-import { SchemaLink } from 'apollo-link-schema';
-import { makeExecutableSchema } from 'graphql-tools';
-import typeDefs from './schema.graphql';
-import resolvers from './schema.js';
-import todosConnector from './todos-connector';
 
-export default () => <Todos />;
+import Layout from './components/templates/Layout';
+import Home from './components/pages/Home';
+import Todos from './components/pages/Todos';
+import About from './components/pages/About';
+import NotFound from './components/pages/NotFound';
 
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
-
-export const link = async ({ graphqlUrl, url, cache }) => {
-  const stateLink = withClientState({
-    cache,
-    resolvers: {
-      Mutation: {
-        filterTasks(_, { visibility }, { cache }) {
-          const data = { visibility, __typename: 'FilterTasks' };
-          cache.writeData({ data });
-          return data;
+export default async ({ isServer, request, name, version }) => {
+  return [
+    {
+      component: Layout,
+      routes: [
+        {
+          path: '/',
+          exact: true,
+          component: props => <Home {...props} name={name} version={version} />,
         },
-      },
+        { path: '/todos', exact: true, component: Todos },
+        { path: '/about', exact: true, component: About },
+        { component: NotFound },
+      ],
     },
-    defaults: {
-      visibility: 'ALL',
-      errorMessages: '',
-    },
-  });
-
-  const errorLink = onError(({ graphQLErrors = [], networkError = '' }) => {
-    const errorMessages = graphQLErrors.reduce(
-      (s, e) => (s += `${e.message}\n`),
-      networkError,
-    );
-
-    cache.writeData({
-      data: {
-        errorMessages,
-        __typename: `ErrorMessages`,
-      },
-    });
-  });
-
-  return ApolloLink.from([
-    errorLink,
-    stateLink,
-    // new SchemaLink({
-    //   schema,
-    //   context: { todos: todosConnector({ graphqlUrl }) },
-    // }),
-    new HttpLink({
-      uri: graphqlUrl || `${url}/graphql`,
-    }),
-  ]);
+  ];
 };

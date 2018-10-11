@@ -1,6 +1,4 @@
-import fetch from 'isomorphic-fetch';
-
-export default ({ config: { todosUrl } }) => {
+export default ({ todosUrl }) => {
   return {
     load,
     add,
@@ -10,7 +8,12 @@ export default ({ config: { todosUrl } }) => {
   };
 
   async function load() {
-    const response = await fetch(`${todosUrl}/_all_docs?include_docs=true`);
+    const response = await fetch(`${todosUrl}/_all_docs?include_docs=true`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
     if (!response.ok) throw new Error(response.statusText);
 
     const data = await response.json();
@@ -26,7 +29,7 @@ export default ({ config: { todosUrl } }) => {
     const response = await fetch(`${todosUrl}?include_docs=true`, {
       method: 'POST',
       headers: {
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(itm),
     });
@@ -47,7 +50,7 @@ export default ({ config: { todosUrl } }) => {
     const response = await fetch(`${todosUrl}/${id}?include_docs=true`, {
       method: 'PUT',
       headers: {
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(item),
     });
@@ -61,7 +64,7 @@ export default ({ config: { todosUrl } }) => {
     const response = await fetch(`${todosUrl}/${id}?rev=${item.rev}`, {
       method: 'DELETE',
       headers: {
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
       },
     });
     if (!response.ok) throw new Error(response.statusText);

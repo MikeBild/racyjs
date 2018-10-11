@@ -15,8 +15,7 @@
     "apollo-link-schema": "^1.1.1",
     "apollo-link-state": "^0.4.2",
     "graphql-tools": "^4.0.0",
-    "racy": "file:../..",
-    "schema.js": "^0.1.2"
+    "racy": "file:../.."
   },
   "devDependencies": {
     "@babel/core": "^7.1.2"

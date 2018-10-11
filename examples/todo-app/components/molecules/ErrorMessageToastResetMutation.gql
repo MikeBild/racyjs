@@ -1,0 +1,5 @@
+mutation ErrorMessageToastReset {
+  errorMessagesReset @client {
+    errorMessages
+  }
+}

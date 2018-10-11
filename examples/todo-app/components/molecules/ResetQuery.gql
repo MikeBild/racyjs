@@ -1,0 +1,3 @@
+query AllErrorMessages {
+  errorMessages @client
+}
