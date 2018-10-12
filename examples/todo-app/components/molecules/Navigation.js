@@ -1,16 +1,29 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import styled from 'styled-components';
+
+const NavList = styled.ul`
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+`;
+
+const NavItem = styled.li`
+  float: left;
+  padding: 12px;
+`;
 
 export default () => (
-  <ul>
-    <li>
+  <NavList>
+    <NavItem>
       <NavLink to="/">Home</NavLink>
-    </li>
-    <li>
+    </NavItem>
+    <NavItem>
       <NavLink to="/todos">Todos</NavLink>
-    </li>
-    <li>
+    </NavItem>
+    <NavItem>
       <NavLink to="/about">About</NavLink>
-    </li>
-  </ul>
+    </NavItem>
+  </NavList>
 );
