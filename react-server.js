@@ -61,7 +61,7 @@ export default async ({ config, app }) => {
     (graphqlUrl && new HttpLink({ uri: graphqlUrl }));
 
   const client = new ApolloClient({
-    queryDeduplication: true,
+    connectToDevTools: isProduction,
     ssrMode: isServer,
     link: shouldPrefetch ? link : new EmptyResultLink(),
     cache,

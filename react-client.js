@@ -60,7 +60,7 @@ const helmetContext = {};
   if (graphqlUrl || link) {
     const client = new ApolloClient({
       ssrMode: isServer,
-      connectToDevTools: !isProduction,
+      connectToDevTools: isProduction,
       queryDeduplication: true,
       link:
         link ||
