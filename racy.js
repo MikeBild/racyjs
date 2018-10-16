@@ -257,10 +257,9 @@ async function main() {
       let devConfig = tryRequire(`${BUILDDIR}/server/config`).default || {};
       Object.assign(devConfig, { name, version, outFile });
 
-      let devMiddleware, devGraphql;
-      // let devMiddleware = tryRequire(`${BUILDDIR}/server/express-server`)
-      //   .default;
-      // let devGraphql = tryRequire(`${BUILDDIR}/server/graphql-server`).default;
+      let devMiddleware = tryRequire(`${BUILDDIR}/server/express-server`)
+        .default;
+      let devGraphql = tryRequire(`${BUILDDIR}/server/graphql-server`).default;
       let devApp = tryRequire(`${BUILDDIR}/server/App`).default;
       let devHandler = await tryRequire(
         `${BUILDDIR}/server/react-server`,
@@ -316,6 +315,14 @@ function tryRequireUncached(module) {
     delete require.cache[require.resolve(module)];
     return require(module);
   } catch (e) {
+    if (
+      !e.message.includes('Cannot find module') &&
+      !e.message.includes('express-server') &&
+      !e.message.includes('graphql-server') &&
+      !e.message.includes('config') &&
+      !e.message.includes('App')
+    )
+      console.error(e);
     return { default: undefined };
   }
 }
@@ -324,6 +331,14 @@ function tryRequire(module) {
   try {
     return require(module);
   } catch (e) {
+    if (
+      !e.message.includes('Cannot find module') &&
+      !e.message.includes('express-server') &&
+      !e.message.includes('graphql-server') &&
+      !e.message.includes('config') &&
+      !e.message.includes('App')
+    )
+      console.error(e);
     return { default: undefined };
   }
 }
@@ -408,7 +423,11 @@ async function buildServer(path, done) {
   done();
 }
 
-async function startExpress(config = {}, graphql, middleware) {
+async function startExpress(
+  config = {},
+  graphql = () => ({}),
+  middleware = () => ({}),
+) {
   const express = require('express');
   const graphqlServer = graphql && (await graphql({ config }));
   const app = express();
