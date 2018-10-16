@@ -43,10 +43,10 @@ main()
   .then(({ config: { url, enabledGraphQLServer, enabledMiddleware } = {} }) => {
     console.log(`Server listen on ${url}`);
     console.log(
-      `GraphQL-Server: ${enabledGraphQLServer ? 'enabled' : 'disabled'}`,
+      `GraphQL-Server : ${enabledGraphQLServer ? 'enabled' : 'disabled'}`,
     );
     console.log(
-      `Express-Server: ${enabledMiddleware ? 'enabled' : 'disabled'}`,
+      `Express-Server : ${enabledMiddleware ? 'enabled' : 'disabled'}`,
     );
   })
   .catch(error => console.error(error));
@@ -253,20 +253,18 @@ async function main() {
 
       const clientBundler = buildClient({ outFile });
       await forkPromise.fn(buildServer, [CURRENTDIR]);
-      const { default: devApp } = tryRequire(`${BUILDDIR}/server/App`);
 
-      const { default: devConfig = {} } = tryRequire(
-        `${BUILDDIR}/server/config`,
-      );
+      let devConfig = tryRequire(`${BUILDDIR}/server/config`).default || {};
       Object.assign(devConfig, { name, version, outFile });
 
-      const { default: devMiddleware } = tryRequire(
-        `${BUILDDIR}/server/express-server`,
-      );
-
-      const { default: devGraphql } = tryRequire(
-        `${BUILDDIR}/server/graphql-server`,
-      );
+      let devMiddleware, devGraphql;
+      // let devMiddleware = tryRequire(`${BUILDDIR}/server/express-server`)
+      //   .default;
+      // let devGraphql = tryRequire(`${BUILDDIR}/server/graphql-server`).default;
+      let devApp = tryRequire(`${BUILDDIR}/server/App`).default;
+      let devHandler = await tryRequire(
+        `${BUILDDIR}/server/react-server`,
+      ).default({ config: devConfig, app: devApp });
 
       const { app: devExpress } = await startExpress(
         devConfig,
@@ -276,13 +274,18 @@ async function main() {
 
       mapConfigToEnvVars(devConfig);
 
-      let devHandler = await require(`${BUILDDIR}/server/react-server`).default(
-        { config: devConfig, app: devApp },
-      );
-
       clientBundler.on('bundled', async bundle => {
         await forkPromise.fn(buildServer, [CURRENTDIR]);
-        devHandler = await requireUncached(
+
+        devConfig =
+          tryRequireUncached(`${BUILDDIR}/server/config`).default || {};
+        Object.assign(devConfig, { name, version, outFile });
+        devMiddleware = tryRequireUncached(`${BUILDDIR}/server/express-server`)
+          .default;
+        devGraphql = tryRequireUncached(`${BUILDDIR}/server/graphql-server`)
+          .default;
+        devApp = tryRequireUncached(`${BUILDDIR}/server/App`).default;
+        devHandler = await tryRequireUncached(
           `${BUILDDIR}/server/react-server`,
         ).default({ config: devConfig, app: devApp });
       });
@@ -308,9 +311,13 @@ function mapConfigToEnvVars(config) {
   });
 }
 
-function requireUncached(module) {
-  delete require.cache[require.resolve(module)];
-  return require(module);
+function tryRequireUncached(module) {
+  try {
+    delete require.cache[require.resolve(module)];
+    return require(module);
+  } catch (e) {
+    return { default: undefined };
+  }
 }
 
 function tryRequire(module) {
@@ -341,41 +348,31 @@ async function buildServer(path, done) {
   const { isProduction } = require(`${path}/index`);
   const BUILDDIR = process.env.BUILDDIR || `${process.cwd()}/.racy`;
   const CACHEDIR = process.env.CACHEDIR || `${process.cwd()}/.cache`;
+  const bundleResults = new Set();
 
-  const serverConfigBundler = new Bundler(`${process.cwd()}/config.js`, {
-    watch: !isProduction,
-    minify: isProduction,
-    sourceMaps: !isProduction,
-    outDir: `${BUILDDIR}/server`,
-    target: 'node',
-    cache: true,
-    cacheDir: CACHEDIR,
-    logLevel: 0,
-    autoinstall: false,
-  });
-
-  try {
-    await serverConfigBundler.bundle();
-    console.log('Configure: enabled');
-  } catch (e) {
-    console.warn('Configure: disabled');
-    if (!e.message.includes('No entries found')) console.error(e);
-  }
-
-  const serverAppBundler = new Bundler(`${process.cwd()}/App.js`, {
-    watch: !isProduction,
-    minify: isProduction,
-    sourceMaps: !isProduction,
-    outDir: `${BUILDDIR}/server`,
-    target: 'node',
-    cache: true,
-    cacheDir: CACHEDIR,
-    logLevel: 0,
-    autoinstall: false,
-  });
+  const serverBundler = new Bundler(
+    [
+      `${process.cwd()}/config.js`,
+      `${process.cwd()}/App.js`,
+      `${process.cwd()}/graphql-server.js`,
+      `${process.cwd()}/express-server.js`,
+    ],
+    {
+      watch: !isProduction,
+      minify: isProduction,
+      sourceMaps: !isProduction,
+      outDir: `${BUILDDIR}/server`,
+      target: 'node',
+      cache: true,
+      cacheDir: CACHEDIR,
+      logLevel: 0,
+      autoinstall: false,
+    },
+  );
 
   try {
-    await serverAppBundler.bundle();
+    const bundleResult = await serverBundler.bundle();
+    bundleResult.childBundles.forEach(x => bundleResults.add(x));
   } catch (e) {
     if (!e.message.includes('No entries found')) console.error(e);
   }
@@ -393,59 +390,21 @@ async function buildServer(path, done) {
   });
 
   try {
-    await reactServerBundler.bundle();
-    console.log('App-Server: enabled');
+    const bundleResult = await reactServerBundler.bundle();
+    bundleResults.add(bundleResult);
   } catch (e) {
-    console.log('App-Server: disabled');
     if (!e.message.includes('No entries found')) console.error(e);
   }
-
-  const graphQLServerBundler = new Bundler(
-    `${process.cwd()}/graphql-server.js`,
-    {
-      watch: !isProduction,
-      minify: isProduction,
-      sourceMaps: !isProduction,
-      outDir: `${BUILDDIR}/server`,
-      target: 'node',
-      cache: true,
-      cacheDir: CACHEDIR,
-      logLevel: 0,
-      autoinstall: false,
-    },
-  );
-
-  try {
-    await graphQLServerBundler.bundle();
-    console.log('GraphQL-Server: enabled');
-  } catch (e) {
-    console.warn('GraphQL-Server: disabled');
-    if (!e.message.includes('No entries found')) console.error(e);
-  }
-
-  const expressServerBundler = new Bundler(
-    `${process.cwd()}/express-server.js`,
-    {
-      watch: !isProduction,
-      minify: isProduction,
-      sourceMaps: !isProduction,
-      outDir: `${BUILDDIR}/server`,
-      target: 'node',
-      cache: true,
-      cacheDir: CACHEDIR,
-      logLevel: 0,
-      autoinstall: false,
-    },
-  );
-
-  try {
-    await expressServerBundler.bundle();
-    console.log('Express-Server: enabled');
-  } catch (e) {
-    console.warn('Express-Server: disabled');
-    if (!e.message.includes('No entries found')) console.error(e);
-  }
-
+  bundleResults.forEach(x => {
+    if (x.name.includes('config.js')) console.log(`Configure      : rebuild`);
+    if (x.name.includes('App.js')) console.log(`App            : rebuild`);
+    if (x.name.includes('graphql-server.js'))
+      console.log(`GraphQL-Server : rebuild`);
+    if (x.name.includes('react-server.js'))
+      console.log(`React-Server   : rebuild`);
+    if (x.name.includes('express-server.js'))
+      console.log(`Express-Server : rebuild`);
+  });
   done();
 }
 
