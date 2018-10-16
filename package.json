@@ -57,7 +57,7 @@
     "fs-extra": "^7.0.0",
     "graphql": "^0.11.7",
     "isomorphic-unfetch": "^3.0.0",
-    "parcel-bundler": "^1.10.2",
+    "parcel-bundler": "^1.10.3",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-apollo": "^2.2.4",
@@ -68,7 +68,7 @@
     "react-router-config": "^4.4.0-beta.1",
     "react-router-dom": "^4.3.1",
     "react-tree-walker": "^4.3.0",
-    "styled-components": "^3.4.10",
+    "styled-components": "^4.0.0",
     "update-notifier": "^2.5.0",
     "yargs": "^12.0.2"
   }
