@@ -1,0 +1,13 @@
+{
+  "dir": "ltr",
+  "lang": "en",
+  "name": "Offline-App",
+  "scope": "./",
+  "display": "fullscreen",
+  "start_url": "./",
+  "short_name": "OfflineApp",
+  "theme_color": "white",
+  "description": "Simple offline app example.",
+  "orientation": "portrait",
+  "background_color": "white"
+}

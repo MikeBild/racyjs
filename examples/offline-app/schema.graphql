@@ -1,0 +1,25 @@
+type Item {
+  id: ID
+  text: String
+}
+
+type Query {
+  items: [Item]
+}
+
+type AddItemResult {
+  result: Item
+  failure: AddItemFailure
+}
+
+type AddItemFailure {
+  message: String!
+}
+
+input AddItemInput {
+  description: String!
+}
+
+type Mutation {
+  addItem(input: AddItemInput!): AddItemResult
+}
