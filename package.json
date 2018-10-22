@@ -1,6 +1,6 @@
 {
   "name": "racy",
-  "version": "1.8.1",
+  "version": "1.8.3",
   "description": "A blazing fast zero-configuration async server-side React with GraphQL toolbelt",
   "source": true,
   "engines": {
@@ -17,7 +17,7 @@
     "serve": "node racy serve",
     "export": "node racy export",
     "start": "npm run build && npm run serve",
-    "prepublish": "changelog"
+    "postversion": "changelog"
   },
   "bin": {
     "racy": "./racy.js"
