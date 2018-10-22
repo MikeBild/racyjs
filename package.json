@@ -17,7 +17,7 @@
     "serve": "node racy serve",
     "export": "node racy export",
     "start": "npm run build && npm run serve",
-    "prepublish": "changelog"
+    "changelog": "changelog"
   },
   "bin": {
     "racy": "./racy.js"
