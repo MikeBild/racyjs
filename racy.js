@@ -27,7 +27,8 @@ const { parse } = require('path');
 const { writeFile } = require('fs');
 const { promisify } = require('util');
 const writeToFile = promisify(writeFile);
-const { ensureDir, emptyDir } = require('fs-extra');
+const { ensureDir, emptyDir, copy, remove, writeJson } = require('fs-extra');
+const readDirRecursive = require('fs-readdir-recursive');
 const Bundler = require('parcel-bundler');
 const forkPromise = require('fork-promise');
 const updateNotifier = require('update-notifier');
@@ -56,8 +57,9 @@ async function main() {
   const { name = '', version = '' } = tryRequire(
     `${process.cwd()}/package.json`,
   );
+  const isPWA = await copyWebManifest();
   const outFile = name && version ? `${name}${version}.bundle.js` : 'bundle.js';
-  mapConfigToEnvVars({ name, version, outFile });
+  mapConfigToEnvVars({ name, version, outFile, isPWA });
 
   switch (argv._[0]) {
     case 'graphql':
@@ -106,11 +108,15 @@ async function main() {
       const { default: buildConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
-      Object.assign(buildConfig, { name, version, outFile });
+      Object.assign(buildConfig, { name, version, outFile, isPWA });
       mapConfigToEnvVars(buildConfig);
 
       try {
-        await buildClient({ outFile }).bundle();
+        await buildClient({ outFile, isPWA }).bundle();
+        await copyCacheManifest({
+          isPWA,
+          workDir: `${BUILDDIR}/client`,
+        });
       } catch (e) {}
       console.log('Bundled');
       process.exit(0);
@@ -121,7 +127,7 @@ async function main() {
       const { default: serveConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
-      Object.assign(serveConfig, { name, version, outFile });
+      Object.assign(serveConfig, { name, version, outFile, isPWA });
 
       const { default: serveMiddleware } = tryRequire(
         `${BUILDDIR}/server/express-server`,
@@ -154,7 +160,11 @@ async function main() {
 
       const fetch = require('isomorphic-unfetch');
       console.log(`Bundling ${outFile}`);
-      await buildClient({ outFile, outDir: PUBLICDIR }).bundle();
+      await buildClient({ outFile, outDir: PUBLICDIR, isPWA }).bundle();
+      await copyCacheManifest({
+        isPWA,
+        workDir: PUBLICDIR,
+      });
       await forkPromise.fn(buildServer, [CURRENTDIR]);
       console.log('Bundled');
       console.log('Serve ...');
@@ -163,7 +173,7 @@ async function main() {
       const { default: exportConfig = {} } = tryRequire(
         `${BUILDDIR}/server/config`,
       );
-      Object.assign(exportConfig, { name, version, outFile });
+      Object.assign(exportConfig, { name, version, outFile, isPWA });
 
       const { default: exportMiddleware } = tryRequire(
         `${BUILDDIR}/server/express-server`,
@@ -251,11 +261,12 @@ async function main() {
       await emptyDir(PUBLICDIR);
       await emptyDir(CACHEDIR);
 
-      const clientBundler = buildClient({ outFile });
+      const clientBundler = buildClient({ outFile, isPWA });
+
       await forkPromise.fn(buildServer, [CURRENTDIR]);
 
       let devConfig = tryRequire(`${BUILDDIR}/server/config`).default || {};
-      Object.assign(devConfig, { name, version, outFile });
+      Object.assign(devConfig, { name, version, outFile, isPWA });
 
       let devMiddleware = tryRequire(`${BUILDDIR}/server/express-server`)
         .default;
@@ -272,13 +283,16 @@ async function main() {
       );
 
       mapConfigToEnvVars(devConfig);
-
       clientBundler.on('bundled', async bundle => {
+        await copyCacheManifest({
+          isPWA,
+          workDir: `${BUILDDIR}/client`,
+        });
         await forkPromise.fn(buildServer, [CURRENTDIR]);
 
         devConfig =
           tryRequireUncached(`${BUILDDIR}/server/config`).default || {};
-        Object.assign(devConfig, { name, version, outFile });
+        Object.assign(devConfig, { name, version, outFile, isPWA });
         devMiddleware = tryRequireUncached(`${BUILDDIR}/server/express-server`)
           .default;
         devGraphql = tryRequireUncached(`${BUILDDIR}/server/graphql-server`)
@@ -343,19 +357,28 @@ function tryRequire(module) {
   }
 }
 
-function buildClient({ outDir, outFile }) {
-  return new Bundler(`${__dirname}/react-client.js`, {
-    watch: !isProduction,
-    minify: isProduction,
-    sourceMaps: !isProduction,
-    outDir: outDir || `${BUILDDIR}/client`,
-    outFile,
-    target: 'browser',
-    cache: true,
-    cacheDir: CACHEDIR,
-    logLevel: 0,
-    autoinstall: false,
-  });
+function buildClient({ outDir, outFile, isPWA }) {
+  return new Bundler(
+    isPWA
+      ? [
+          `${__dirname}/react-client.js`,
+          `${__dirname}/manifest.webmanifest`,
+          `${__dirname}/sw.js`,
+        ]
+      : `${__dirname}/react-client.js`,
+    {
+      watch: !isProduction,
+      minify: isProduction,
+      sourceMaps: !isProduction,
+      outDir: outDir || `${BUILDDIR}/client`,
+      outFile,
+      target: 'browser',
+      cache: true,
+      cacheDir: CACHEDIR,
+      logLevel: 0,
+      autoinstall: false,
+    },
+  );
 }
 
 async function buildServer(path, done) {
@@ -423,11 +446,7 @@ async function buildServer(path, done) {
   done();
 }
 
-async function startExpress(
-  config = {},
-  graphql = () => ({}),
-  middleware = () => ({}),
-) {
+async function startExpress(config = {}, graphql, middleware) {
   const express = require('express');
   const graphqlServer = graphql && (await graphql({ config }));
   const app = express();
@@ -447,7 +466,7 @@ async function startExpress(
       const host = address.address === '::' ? 'localhost' : address.address;
 
       const url = process.env.URL || `http://${host}:${port}`;
-      const graphqlUrl = config.graphqlUrl || `${url}/graphql`;
+      const graphqlUrl = config.graphqlUrl || (url && `${url}/graphql`) || null;
 
       Object.assign(config, {
         port,
@@ -487,4 +506,29 @@ async function fetchFragmentTypes({ graphqlUrl }) {
   });
   if (!response.ok) throw new Error(response.statusText);
   return (await response.json()).data;
+}
+
+async function copyWebManifest() {
+  try {
+    await remove(`${__dirname}/manifest.webmanifest`);
+    await copy(
+      `${process.cwd()}/manifest.webmanifest`,
+      `${__dirname}/manifest.webmanifest`,
+      { overwrite: true },
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function copyCacheManifest({ isPWA, workDir }) {
+  if (!isPWA) return;
+
+  const assets = await readDirRecursive(workDir).filter(
+    x => !x.includes('sw.js'),
+  );
+  await writeJson(`${workDir}/manifest.json`, assets, {
+    spaces: 2,
+  });
 }

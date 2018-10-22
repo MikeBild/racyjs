@@ -31,10 +31,12 @@ export default async ({ config, app }) => {
     shouldPrefetch,
     ssrMode,
     outFile,
+    isPWA,
     name,
     version,
     graphqlUrl,
   } = config;
+
   const containerElementName = `${name}${version}`;
   const fragmentTypesConfig = Object.assign({}, config, {
     isServer,
@@ -102,7 +104,7 @@ export default async ({ config, app }) => {
       helmet: helmetContext.helmet,
       data: client.extract(),
     };
-
+    res.setHeader('Content-Type', 'text/html');
     res.write(
       `<!doctype html>
 <html ${helmet.htmlAttributes}>
@@ -114,6 +116,12 @@ export default async ({ config, app }) => {
     ${helmet.script}
     ${helmet.style}
     ${ssrMode ? '' : `<script src="/${outFile}" defer></script>`}
+    ${isPWA ? '<link rel="manifest" href="/manifest.webmanifest" />' : ''}
+    ${
+      isPWA
+        ? '<script>if ("serviceWorker" in navigator) window.addEventListener("load", function() { navigator.serviceWorker.register("/sw.js") });</script>'
+        : ''
+    }
   </head>
   <body ${helmet.bodyAttributes}>
     <div id="${containerElementName || 'root'}">`,
