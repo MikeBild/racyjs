@@ -5,6 +5,9 @@ import { HttpLink } from 'apollo-link-http';
 import { makeExecutableSchema } from 'graphql-tools';
 import typeDefs from './schema.graphql';
 import resolvers from './schema.js';
+import EventEmitter from 'events';
+
+const eventemitter = new EventEmitter();
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -14,18 +17,18 @@ const schema = makeExecutableSchema({
 const createLink = async ({ isServer, graphqlUrl, cache }) => {
   if (!isServer) {
     window.addEventListener('online', () => {
-      console.log('Online');
       const data = {
         network: { status: 'online', __typename: 'NetworkState' },
       };
       cache.writeData({ data });
+      eventemitter.emit('online');
     });
     window.addEventListener('offline', () => {
-      console.log('Offline');
       const data = {
         network: { status: 'offline', __typename: 'NetworkState' },
       };
       cache.writeData({ data });
+      eventemitter.emit('offline');
     });
   }
 
@@ -42,7 +45,7 @@ const createLink = async ({ isServer, graphqlUrl, cache }) => {
     },
     defaults: {
       network: {
-        status: 'pending', //!isServer && navigator.onLine ? 'online' : 'offline',
+        status: !isServer && navigator.onLine ? 'online' : 'offline',
         __typename: 'NetworkState',
       },
       errorMessages: '',
@@ -75,4 +78,5 @@ export default {
   port: process.env.PORT || 9090,
   graphqlUrl: 'http://localhost:9090/graphql',
   createLink,
+  eventemitter,
 };
