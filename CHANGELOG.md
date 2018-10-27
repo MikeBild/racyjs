@@ -1,3 +1,11 @@
+## [Version 1.8.6](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.6) (2018-10-27)
+
+### Bug fixes
+
+- proper output name: [`f88fb1b`](https://github.com/:MikeBild/racyjs/commit/f88fb1b)
+
+[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.5...v1.8.6)
+
 ## [Version 1.8.1](https://github.com/MikeBild/racyjs/releases/tag/v1.8.1) (2018-10-18)
 
 ### Bug fixes
