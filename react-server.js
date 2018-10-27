@@ -37,7 +37,7 @@ export default async ({ config, app }) => {
     graphqlUrl,
   } = config;
 
-  const containerElementName = `${name}${version}`;
+  const containerElementName = `${name}-${version}`;
   const fragmentTypesConfig = Object.assign({}, config, {
     isServer,
     isProduction,

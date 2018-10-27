@@ -58,7 +58,8 @@ async function main() {
     `${process.cwd()}/package.json`,
   );
   const isPWA = await copyWebManifest();
-  const outFile = name && version ? `${name}${version}.bundle.js` : 'bundle.js';
+  const outFile =
+    name && version ? `${name}.${version}.bundle.js` : 'bundle.js';
   mapConfigToEnvVars({ name, version, outFile, isPWA });
 
   switch (argv._[0]) {
@@ -372,7 +373,9 @@ function buildClient({ outDir, outFile, isPWA }) {
       sourceMaps: !isProduction,
       outDir: outDir || `${BUILDDIR}/client`,
       outFile,
+      contentHash: true,
       target: 'browser',
+      scopeHoist: false,
       cache: true,
       cacheDir: CACHEDIR,
       logLevel: 0,
@@ -400,6 +403,7 @@ async function buildServer(path, done) {
       minify: isProduction,
       sourceMaps: !isProduction,
       outDir: `${BUILDDIR}/server`,
+      contentHash: false,
       target: 'node',
       cache: true,
       cacheDir: CACHEDIR,

@@ -35,7 +35,7 @@ const helmetContext = {};
     createLink,
     createFragmentTypes,
   } = config;
-  const containerElementName = `${name}${version}`;
+  const containerElementName = `${name}-${version}`;
   const introspectionQueryResultData =
     createFragmentTypes &&
     (await createFragmentTypes({ ...config, isServer, isProduction }));
