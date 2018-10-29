@@ -1,3 +1,11 @@
+## [Version 1.8.7](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.7) (2018-10-29)
+
+### Bug fixes
+
+- NPM deps and error log: [`136e64b`](https://github.com/:MikeBild/racyjs/commit/136e64b)
+
+[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.6...v1.8.7)
+
 ## [Version 1.8.6](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.6) (2018-10-27)
 
 ### Bug fixes
