@@ -8,7 +8,6 @@ const store = {
   },
   update(online) {
     this.state = { online };
-    console.log(this.state);
   },
 };
 const OnOfflineProvider = React.createContext(store);
@@ -34,7 +33,6 @@ const OfflinePage = ({ name, version }) => {
   return (
     <OnOfflineProvider.Consumer>
       {value => {
-        console.log('consumer state', value);
         return (
           <Query query={NETWORK_STATE}>
             {({
@@ -82,7 +80,6 @@ const OfflinePage = ({ name, version }) => {
 };
 
 export default async ({ name, version, eventemitter }) => {
-  console.log(eventemitter);
   eventemitter.on('online', () => {
     store.update(true);
   });
