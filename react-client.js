@@ -20,7 +20,11 @@ const helmetContext = {};
   let config = {};
   try {
     config = require('./config').default;
-  } catch (e) {}
+  } catch (e) {
+    if (e.message.includes('Cannot find module')) return;
+
+    throw e;
+  }
 
   Object.assign(config, {
     name: process.env.NAME,
