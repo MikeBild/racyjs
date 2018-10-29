@@ -75,8 +75,8 @@ const createLink = async ({ isServer, graphqlUrl, cache }) => {
 };
 
 export default {
-  port: process.env.PORT || 9090,
-  graphqlUrl: 'http://localhost:9090/graphql',
+  port: process.env.PORT || 8080,
+  graphqlUrl: 'http://localhost:8080/graphql',
   createLink,
   eventemitter,
 };

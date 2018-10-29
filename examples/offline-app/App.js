@@ -1,6 +1,7 @@
 import React, { Fragment as F, Component } from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
+
 const store = {
   state: {
     online: true,
@@ -10,7 +11,7 @@ const store = {
     console.log(this.state);
   },
 };
-const { Provider, Consumer } = React.createContext(store);
+const OnOfflineProvider = React.createContext(store);
 
 const NETWORK_STATE = gql`
   query NetworkState {
@@ -31,7 +32,7 @@ const GET_ITEMS = gql`
 
 const OfflinePage = ({ name, version }) => {
   return (
-    <Consumer>
+    <OnOfflineProvider.Consumer>
       {value => {
         console.log('consumer state', value);
         return (
@@ -76,11 +77,12 @@ const OfflinePage = ({ name, version }) => {
           </Query>
         );
       }}
-    </Consumer>
+    </OnOfflineProvider.Consumer>
   );
 };
 
 export default async ({ name, version, eventemitter }) => {
+  console.log(eventemitter);
   eventemitter.on('online', () => {
     store.update(true);
   });
@@ -89,9 +91,9 @@ export default async ({ name, version, eventemitter }) => {
   });
 
   return (
-    <Provider value={store}>
+    <OnOfflineProvider.Provider value={store}>
       <OfflinePage {...{ name, version }} />
-    </Provider>
+    </OnOfflineProvider.Provider>
   );
 };
 

@@ -11,14 +11,11 @@
     "static": "NODE_ENV=production npm run export && racy static"
   },
   "dependencies": {
-    "apollo-link": "^1.2.3",
     "apollo-link-error": "^1.1.1",
-    "apollo-link-schema": "^1.1.1",
     "apollo-link-state": "^0.4.2",
-    "graphql-tools": "^4.0.0",
     "racy": "file:../.."
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2"
+    "@babel/core": "7.1.2"
   }
 }
