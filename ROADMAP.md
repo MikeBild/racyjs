@@ -9,9 +9,17 @@
 
 - PWA support
 
-## v1.9.x
+## v1.9.0
 
 - GraphQL subscription support
+
+## v1.9.1
+
+- Docker `dockerfile` generation
+
+## v1.9.2
+
+- Kubernetes `deployment.yaml` and `service.yaml` generation
 
 ## v2.x.x
 
