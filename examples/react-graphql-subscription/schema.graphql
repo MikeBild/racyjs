@@ -1,0 +1,12 @@
+type Item {
+  id: ID!
+  name: String
+}
+
+type Query {
+  items: [Item]
+}
+
+type Subscription {
+  changed: Item
+}

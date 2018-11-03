@@ -1,6 +1,7 @@
 # Racy
 
-> A blazing fast zero-configuration async server-side React with GraphQL toolbelt.
+> A blazing fast zero-configuration async server-side React with GraphQL
+> toolbelt.
 
 ## Stack
 
@@ -9,9 +10,14 @@
 - [React](https://github.com/facebook/react/blob/master/README.md)
 - [Styled-Components](https://github.com/styled-components/styled-components/blob/master/README.md)
 - [Helmet-Async](https://github.com/staylor/react-helmet-async/blob/master/README.md)
-- [React-Router v4](https://github.com/ReactTraining/react-router/blob/master/packages/react-router/README.md) + [React-Router-DOM](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/README.md) + [React-Router-Config](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-config/README.md)
+- [React-Router v4](https://github.com/ReactTraining/react-router/blob/master/packages/react-router/README.md) +
+  [React-Router-DOM](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-dom/README.md) +
+  [React-Router-Config](https://github.com/ReactTraining/react-router/blob/master/packages/react-router-config/README.md)
 - [Express](https://github.com/expressjs/express/blob/master/Readme.md)
-- [GraphQL](https://github.com/facebook/graphql/blob/master/README.md) [Apollo React](https://github.com/apollographql/react-apollo/blob/master/README.md) & [Apollo Server](https://github.com/apollographql/apollo-server/blob/master/README.md)
+- [GraphQL](https://github.com/facebook/graphql/blob/master/README.md)
+  [Apollo React](https://github.com/apollographql/react-apollo/blob/master/README.md)
+  &
+  [Apollo Server](https://github.com/apollographql/apollo-server/blob/master/README.md)
 
 ## Setup
 
@@ -41,6 +47,7 @@ _`package.json`_
 - [How to use customize Apollo links?](#how-to-use-customize-apollo-links)
 - [How to extend Express with additional middleware?](#how-to-extend-express-with-additional-middleware)
 - [How to create a GraphQL server?](#how-to-create-a-graphql-server)
+- [How to add GraphQL subscriptions on the client?](#how-to-add-graphql-subscriptions-on-the-client)
 
 ## CLI
 
@@ -260,3 +267,68 @@ export default ({ config }) => ({
 ```
 
 - [GraphQL Server Example](examples/graphql-server/README.md)
+
+## How to add GraphQL subscriptions on the client?
+
+_`config.js`_
+
+```jsx
+import { split } from 'apollo-link';
+import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities';
+
+export default {
+  port: 8080,
+  createLink,
+};
+
+function createLink({ isServer }) {
+  const httpLink = new HttpLink({
+    uri: `http://localhost:8080/graphql`,
+  });
+
+  const wsLink = isServer
+    ? null
+    : new WebSocketLink({
+        uri: `ws://localhost:8080/graphql`,
+        options: {
+          reconnect: true,
+        },
+      });
+
+  return isServer
+    ? httpLink
+    : split(
+        ({ query }) => {
+          const { kind, operation } = getMainDefinition(query);
+          return kind === 'OperationDefinition' && operation === 'subscription';
+        },
+        wsLink,
+        httpLink,
+      );
+}
+```
+
+_`App.js`_
+
+```jsx
+import React, { Fragment as F } from 'react';
+import { Subscription } from 'react-apollo';
+import gql from 'graphql-tag';
+
+const GRAPHQL_SUBSCRIPTION = gql`
+  subscription OnChanged {
+    changed {
+      id
+      name
+    }
+  }
+`;
+
+export default async () => (
+  <Subscription subscription={GRAPHQL_SUBSCRIPTION}>
+    {({ data }) => <pre>{JSON.stringify(data, null, 2)}</pre>}
+  </Subscription>
+);
+```

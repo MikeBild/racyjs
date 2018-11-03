@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "react-graphql-subscription",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "racy dev",
+    "build": "racy build",
+    "serve": "racy serve",
+    "export": "racy export",
+    "start": "NODE_ENV=production racy build && racy serve",
+    "static": "NODE_ENV=production npm run export && racy static",
+    "graphql:fragments": "racy graphql fragments fragmentTypes.json"
+  },
+  "dependencies": {
+    "apollo-link": "^1.2.3",
+    "apollo-link-http": "^1.5.5",
+    "apollo-link-ws": "^1.0.9",
+    "apollo-utilities": "^1.0.25",
+    "racy": "file:../..",
+    "react": "^16.5.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2"
+  }
+}
