@@ -1,35 +1,38 @@
-## [Version 1.9.0](https://github.com/:MikeBild/racyjs/releases/tag/v1.9.0) (2018-11-3)
+## [Version 1.9.0](https://github.com/mikebild/racyjs/releases/tag/v1.9.0) (2018-11-3)
 
 ### New features
 
-- feature: GraphQL subscriptions: [`e3ba9d0`](https://github.com/:MikeBild/racyjs/commit/e3ba9d0)
+- feature: GraphQL subscriptions:
+  [`e3ba9d0`](https://github.com/mikebild/racyjs/commit/e3ba9d0)
 
-[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.7...v1.9.0)
+[...full changes](https://github.com/mikebild/racyjs/compare/v1.8.7...v1.9.0)
 
-## [Version 1.8.7](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.7) (2018-10-29)
-
-### Bug fixes
-
-- NPM deps and error log: [`136e64b`](https://github.com/:MikeBild/racyjs/commit/136e64b)
-
-[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.6...v1.8.7)
-
-## [Version 1.8.6](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.6) (2018-10-27)
+## [Version 1.8.7](https://github.com/mikebild/racyjs/releases/tag/v1.8.7) (2018-10-29)
 
 ### Bug fixes
 
-- proper output name: [`f88fb1b`](https://github.com/:MikeBild/racyjs/commit/f88fb1b)
+- NPM deps and error log:
+  [`136e64b`](https://github.com/mikebild/racyjs/commit/136e64b)
 
-[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.5...v1.8.6)
+[...full changes](https://github.com/mikebild/racyjs/compare/v1.8.6...v1.8.7)
 
-## [Version 1.8.1](https://github.com/MikeBild/racyjs/releases/tag/v1.8.1) (2018-10-18)
+## [Version 1.8.6](https://github.com/mikebild/racyjs/releases/tag/v1.8.6) (2018-10-27)
 
 ### Bug fixes
 
-- cleanup Apollo dev tools on server side: [`fd3e8d5`](https://github.com/MikeBild/racyjs/commit/fd3e8d5)
+- proper output name:
+  [`f88fb1b`](https://github.com/mikebild/racyjs/commit/f88fb1b)
 
-[...full changes](https://github.com/MikeBild/racyjs/compare/v1.8.0...v1.8.1)
+[...full changes](https://github.com/mikebild/racyjs/compare/v1.8.5...v1.8.6)
 
+## [Version 1.8.1](https://github.com/mikebild/racyjs/releases/tag/v1.8.1) (2018-10-18)
+
+### Bug fixes
+
+- cleanup Apollo dev tools on server side:
+  [`fd3e8d5`](https://github.com/mikebild/racyjs/commit/fd3e8d5)
+
+[...full changes](https://github.com/mikebild/racyjs/compare/v1.8.0...v1.8.1)
 
 ---
 
