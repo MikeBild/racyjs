@@ -25,6 +25,7 @@ const argv = require('yargs')
 const fetch = require('isomorphic-unfetch');
 const { parse } = require('path');
 const { writeFile } = require('fs');
+const { createServer } = require('http');
 const { promisify } = require('util');
 const writeToFile = promisify(writeFile);
 const { ensureDir, emptyDir, copy, remove, writeJson } = require('fs-extra');
@@ -454,17 +455,20 @@ async function startExpress(config = {}, graphql, middleware) {
   const express = require('express');
   const graphqlServer = graphql && (await graphql({ config }));
   const app = express();
+  const httpServer = createServer(app);
+
   app.disable('x-powered-by');
 
   if (graphqlServer) {
     const { ApolloServer } = require('apollo-server-express');
     const apolloServer = new ApolloServer(graphqlServer);
     apolloServer.applyMiddleware({ app });
+    apolloServer.installSubscriptionHandlers(httpServer);
   }
   if (middleware) await middleware({ app, config });
 
   return new Promise(resolve => {
-    const server = app.listen(config.port || null, () => {
+    const server = httpServer.listen(config.port || null, () => {
       const address = server.address();
       const port = address.port;
       const host = address.address === '::' ? 'localhost' : address.address;
