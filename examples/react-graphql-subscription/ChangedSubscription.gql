@@ -1,0 +1,6 @@
+subscription OnChanged {
+  changed {
+    id
+    name
+  }
+}
