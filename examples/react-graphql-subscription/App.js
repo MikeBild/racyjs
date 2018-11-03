@@ -1,7 +1,15 @@
 import React, { Fragment as F } from 'react';
+import gql from 'graphql-tag';
 import { Subscription } from 'react-apollo';
 
-import GRAPHQL_SUBSCRIPTION from './ChangedSubscription.gql';
+const GRAPHQL_SUBSCRIPTION = gql`
+  subscription OnChanged {
+    changed {
+      id
+      name
+    }
+  }
+`;
 
 export default async ({ name, version }) => {
   return (

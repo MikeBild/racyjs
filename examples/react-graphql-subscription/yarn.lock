@@ -5251,7 +5251,7 @@ quote-stream@^1.0.1, quote-stream@~1.0.2:
     through2 "^2.0.0"
 
 "racy@file:../..":
-  version "1.8.7"
+  version "1.9.0"
   dependencies:
     "@babel/core" "^7.1.2"
     "@babel/polyfill" "^7.0.0"
