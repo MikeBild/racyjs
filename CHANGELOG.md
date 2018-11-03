@@ -1,3 +1,11 @@
+## [Version 1.9.0](https://github.com/:MikeBild/racyjs/releases/tag/v1.9.0) (2018-11-3)
+
+### New features
+
+- feature: GraphQL subscriptions: [`e3ba9d0`](https://github.com/:MikeBild/racyjs/commit/e3ba9d0)
+
+[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.8.7...v1.9.0)
+
 ## [Version 1.8.7](https://github.com/:MikeBild/racyjs/releases/tag/v1.8.7) (2018-10-29)
 
 ### Bug fixes

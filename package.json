@@ -1,6 +1,6 @@
 {
   "name": "racy",
-  "version": "1.8.7",
+  "version": "1.9.0",
   "description": "A blazing fast zero-configuration async server-side React with GraphQL toolbelt",
   "source": true,
   "engines": {
