@@ -1,3 +1,12 @@
+## [Version 1.9.1](https://github.com/:MikeBild/racyjs/releases/tag/v1.9.1) (2018-11-4)
+
+### Bug fixes
+
+- changelog links: [`b973b17`](https://github.com/:MikeBild/racyjs/commit/b973b17)
+- upgrade NPM dependencies: [`368b92b`](https://github.com/:MikeBild/racyjs/commit/368b92b)
+
+[...full changes](https://github.com/:MikeBild/racyjs/compare/v1.9.0...v1.9.1)
+
 ## [Version 1.9.0](https://github.com/mikebild/racyjs/releases/tag/v1.9.0) (2018-11-3)
 
 ### New features
