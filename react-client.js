@@ -3,7 +3,8 @@ import '@babel/polyfill';
 import React from 'react';
 import { render, hydrate } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { renderRoutes } from 'react-router-config';
+import { matchPath, Router } from 'react-router';
+import { renderRoutes, matchRoutes } from 'react-router-config';
 import { HelmetProvider } from 'react-helmet-async';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -61,6 +62,19 @@ const helmetContext = {};
   const components = app && (await app({ ...config, isServer, isProduction }));
   const show = isProduction ? hydrate : render;
 
+  const matchedRoute = matchRoutes(components, window.location.pathname);
+
+  const allGetProps = await Promise.all(
+    matchedRoute.map(x =>
+      x.route.component.getProps
+        ? x.route.component.getProps({ config, match: x.match })
+        : null
+    )
+  );
+  const data = allGetProps
+    .filter(Boolean)
+    .reduce((s, i) => Object.assign(s, i), {});
+
   if (graphqlUrl || link) {
     const client = new ApolloClient({
       ssrMode: isServer,
@@ -84,11 +98,13 @@ const helmetContext = {};
           React.createElement(
             BrowserRouter,
             null,
-            Array.isArray(components) ? renderRoutes(components) : components,
-          ),
-        ),
+            Array.isArray(components)
+              ? renderRoutes(components, { data })
+              : components
+          )
+        )
       ),
-      document.getElementById(containerElementName || 'root'),
+      document.getElementById(containerElementName || 'root')
     );
   } else {
     show(
@@ -98,10 +114,12 @@ const helmetContext = {};
         React.createElement(
           BrowserRouter,
           null,
-          Array.isArray(components) ? renderRoutes(components) : components,
-        ),
+          Array.isArray(components)
+            ? renderRoutes(components, { data })
+            : components
+        )
       ),
-      document.getElementById(containerElementName || 'root'),
+      document.getElementById(containerElementName || 'root')
     );
   }
 })();

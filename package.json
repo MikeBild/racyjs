@@ -1,6 +1,6 @@
 {
   "name": "racy",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "A blazing fast zero-configuration async server-side React with GraphQL toolbelt",
   "source": true,
   "engines": {
@@ -68,7 +68,7 @@
     "react-helmet": "5.2.0",
     "react-helmet-async": "0.2.0",
     "react-router": "4.3.1",
-    "react-router-config": "4.4.0-beta.6",
+    "react-router-config": "4.4.0-beta.1",
     "react-router-dom": "4.3.1",
     "react-tree-walker": "4.3.0",
     "styled-components": "4.0.3",
