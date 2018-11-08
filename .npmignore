@@ -4,3 +4,5 @@ node_modules
 .tmp
 .racy
 dist
+.racy-deploy.json
+.racy-deploy
